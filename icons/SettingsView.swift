@@ -60,7 +60,7 @@ struct SettingsView: View {
                         }
                         .padding(.horizontal)
 
-                        NavigationLink(destination: ChangeEmailView()) {
+                        NavigationLink(destination: ChangeEmailView(userUID: userUID)) {
                             Text("Change Email")
                                 .font(.headline)
                                 .padding()

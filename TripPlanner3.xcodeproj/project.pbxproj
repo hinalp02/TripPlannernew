@@ -11,6 +11,7 @@
 		DB3A67872CB24ADA0092CE75 /* button.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3A67862CB24ADA0092CE75 /* button.swift */; };
 		DB3A678B2CB2749D0092CE75 /* DayActivities.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3A678A2CB2749D0092CE75 /* DayActivities.swift */; };
 		DB3A678D2CB279C30092CE75 /* iteneraryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3A678C2CB279C30092CE75 /* iteneraryModels.swift */; };
+		DB3A678F2CB2934B0092CE75 /* PlanController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3A678E2CB2934B0092CE75 /* PlanController.swift */; };
 		DB3D11662C6199E50067E215 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3D11652C6199E50067E215 /* AppDelegate.swift */; };
 		DB3D11682C6199E50067E215 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3D11672C6199E50067E215 /* SceneDelegate.swift */; };
 		DB3D11722C6199E60067E215 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = DB3D11712C6199E60067E215 /* Base */; };
@@ -43,7 +44,6 @@
 		DBC8A0722C962FFC0034CA2D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC8A0712C962FFC0034CA2D /* SettingsView.swift */; };
 		DBC8A0742C966B510034CA2D /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC8A0732C966B510034CA2D /* ChangePasswordView.swift */; };
 		DBC8A0762C966C770034CA2D /* PastTripsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC8A0752C966C770034CA2D /* PastTripsView.swift */; };
-		DBC8A0782C9695A80034CA2D /* PlanController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC8A0772C9695A80034CA2D /* PlanController.swift */; };
 		DBC8A07B2C96964C0034CA2D /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = DBC8A07A2C96964C0034CA2D /* OpenAI */; };
 		DBC8A07D2C96969C0034CA2D /* ImageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC8A07C2C96969C0034CA2D /* ImageController.swift */; };
 		DBC8A07F2C96970D0034CA2D /* ItineraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC8A07E2C96970D0034CA2D /* ItineraryView.swift */; };
@@ -76,6 +76,7 @@
 		DB3A67862CB24ADA0092CE75 /* button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = button.swift; sourceTree = "<group>"; };
 		DB3A678A2CB2749D0092CE75 /* DayActivities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayActivities.swift; sourceTree = "<group>"; };
 		DB3A678C2CB279C30092CE75 /* iteneraryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iteneraryModels.swift; sourceTree = "<group>"; };
+		DB3A678E2CB2934B0092CE75 /* PlanController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanController.swift; sourceTree = "<group>"; };
 		DB3D11622C6199E50067E215 /* TripPlanner3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TripPlanner3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB3D11652C6199E50067E215 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DB3D11672C6199E50067E215 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -112,7 +113,6 @@
 		DBC8A0712C962FFC0034CA2D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		DBC8A0732C966B510034CA2D /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 		DBC8A0752C966C770034CA2D /* PastTripsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastTripsView.swift; sourceTree = "<group>"; };
-		DBC8A0772C9695A80034CA2D /* PlanController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanController.swift; sourceTree = "<group>"; };
 		DBC8A07C2C96969C0034CA2D /* ImageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageController.swift; sourceTree = "<group>"; };
 		DBC8A07E2C96970D0034CA2D /* ItineraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItineraryView.swift; sourceTree = "<group>"; };
 		DBC8A0802C9697370034CA2D /* PlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanView.swift; sourceTree = "<group>"; };
@@ -232,9 +232,10 @@
 				DB3D119D2C6447C10067E215 /* RegisterController.swift */,
 				DBC8A0532C8D63B60034CA2D /* SplashController.swift */,
 				DBC8A0552C8D64FE0034CA2D /* IntroController.swift */,
-				DBC8A0772C9695A80034CA2D /* PlanController.swift */,
 				DBC8A07C2C96969C0034CA2D /* ImageController.swift */,
 				DB3A67862CB24ADA0092CE75 /* button.swift */,
+				DB3A678A2CB2749D0092CE75 /* DayActivities.swift */,
+				DB3A678E2CB2934B0092CE75 /* PlanController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -261,7 +262,6 @@
 				DBC8A0802C9697370034CA2D /* PlanView.swift */,
 				DBC8A0822C96975F0034CA2D /* DayActivityView.swift */,
 				DBC8A0862C96B6AF0034CA2D /* ChangeEmailView.swift */,
-				DB3A678A2CB2749D0092CE75 /* DayActivities.swift */,
 				DB3A678C2CB279C30092CE75 /* iteneraryModels.swift */,
 			);
 			path = Views;
@@ -489,6 +489,7 @@
 				DBC8A0812C9697370034CA2D /* PlanView.swift in Sources */,
 				DBC8A0542C8D63B60034CA2D /* SplashController.swift in Sources */,
 				DB3D11B42C645A610067E215 /* Validator.swift in Sources */,
+				DB3A678F2CB2934B0092CE75 /* PlanController.swift in Sources */,
 				DB3D119E2C6447C10067E215 /* RegisterController.swift in Sources */,
 				DBC8A0872C96B6AF0034CA2D /* ChangeEmailView.swift in Sources */,
 				DBC8A05C2C955CF20034CA2D /* ProfileView.swift in Sources */,
@@ -503,7 +504,6 @@
 				DBC8A0522C894BD80034CA2D /* SecondView.swift in Sources */,
 				DB3A67872CB24ADA0092CE75 /* button.swift in Sources */,
 				DB3A678B2CB2749D0092CE75 /* DayActivities.swift in Sources */,
-				DBC8A0782C9695A80034CA2D /* PlanController.swift in Sources */,
 				DBC8A0722C962FFC0034CA2D /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -157,7 +157,17 @@ struct ChangeEmailView: View {
 
         // Prepare the URL and request
 //        let url = URL(string: "http://localhost:3000/update-email")!
+        
+        //run this commnd on your terminal
+        //cd ~/Desktop/TripPlanner4/firebase-admin-sdk-project
+       // node server.js
+
+        //for running on your computer
         let url = URL(string: "http://10.19.41.72:3000/update-email")!
+        
+        //for running on iphone
+       // let url = URL(string: "http://10.19.41.72:3000/update-email")!
+
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

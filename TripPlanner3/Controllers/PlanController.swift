@@ -15,7 +15,7 @@
 //    @Published var apiError: String? = nil  // Store any API errors to show in UI
 //
 //    // new API key
-//    private let openAI = OpenAI(apiToken: "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")
+//    private let openAI = OpenAI(apiToken: "temp")
 //
 //
 //    /// Clear previous search results before starting a new one

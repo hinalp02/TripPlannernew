@@ -119,7 +119,7 @@ class PlanController: ObservableObject {
    @Published var isLoading: Bool = false
    
    
-   // new API key
+   // new API key temp
    private let openAI = OpenAI(apiToken: "temp")
 
 

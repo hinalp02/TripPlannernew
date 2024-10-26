@@ -800,5 +800,3 @@ struct PersonalInfoRow: View {
     }
        
 }
-
-

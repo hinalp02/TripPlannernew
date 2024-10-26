@@ -120,6 +120,7 @@ class PlanController: ObservableObject {
    
    
    // new API key
+    // remember to add the api key
    private let openAI = OpenAI(apiToken: "temp")
 
 
@@ -134,7 +135,7 @@ class PlanController: ObservableObject {
         hasGeneratedActivities = false  // Mark that activities are not generated yet
         isLoading = true  // Set loading to true for the new fetch
     }
-   
+    
    // sends a new message to the API to generate the trips details from user input from SecondView
    func sendNewMessage(userUID: String, location: String, filter: String, days: Int) {
        // clear any previous error

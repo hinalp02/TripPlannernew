@@ -99,15 +99,228 @@
 //        }
 //    }
 //}
+
+
+
+//import SwiftUI
+//import FirebaseAuth
+//struct ChangeEmailView: View {
+//    @Environment(\.presentationMode) var presentationMode
+//    @State private var currentPassword: String = ""
+//    @State private var newEmail: String = ""
+//    @State private var errorMessage: String?
+//
+//    var userUID: String  // This should match the argument passed from SettingsView
+//
+//    var body: some View {
+//        VStack(spacing: 20) {
+//            Text("Change Email")
+//                .font(.largeTitle)
+//                .padding()
+//
+//            SecureField("Current Password", text: $currentPassword)
+//                .textFieldStyle(RoundedBorderTextFieldStyle())
+//                .padding(.horizontal)
+//
+//            TextField("New Email", text: $newEmail)
+//                .keyboardType(.emailAddress)
+//                .textFieldStyle(RoundedBorderTextFieldStyle())
+//                .padding(.horizontal)
+//
+//            if let errorMessage = errorMessage {
+//                Text(errorMessage)
+//                    .foregroundColor(.red)
+//                    .padding()
+//            }
+//
+//            Button(action: updateEmail) {
+//                Text("Update Email")
+//                    .font(.headline)
+//                    .padding()
+//                    .frame(maxWidth: .infinity)
+//                    .background(Color.blue)
+//                    .foregroundColor(.white)
+//                    .cornerRadius(10)
+//            }
+//            .padding()
+//
+//            Spacer()
+//        }
+//        .padding(.top)
+//        .background(Color(.systemGroupedBackground))
+//        .navigationTitle("Change Email")
+//        .navigationBarTitleDisplayMode(.inline)
+//    }
+//
+//    private func updateEmail() {
+//        guard !newEmail.isEmpty else {
+//            errorMessage = "New email cannot be empty."
+//            return
+//        }
+//
+//        // Prepare the URL and request
+////        let url = URL(string: "http://localhost:3000/update-email")!
+//        
+//        //run this commnd on your terminal
+//        //cd ~/Desktop/TripPlanner4/firebase-admin-sdk-project
+//       // node server.js
+//
+//        //for running on your computer
+//        let url = URL(string: "http://10.19.41.72:3000/update-email")!
+//        
+//        //for running on iphone
+//       // let url = URL(string: "http://10.19.41.72:3000/update-email")!
+//
+//        var request = URLRequest(url: url)
+//        request.httpMethod = "POST"
+//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//
+//        // Create the JSON payload
+//        let jsonPayload = [
+//            "uid": userUID,  // Pass the actual UID here
+//            "newEmail": newEmail
+//        ]
+//
+//        // Convert to JSON data
+//        guard let jsonData = try? JSONSerialization.data(withJSONObject: jsonPayload) else {
+//            errorMessage = "Failed to create JSON payload"
+//            return
+//        }
+//
+//        // Send the request
+//        URLSession.shared.uploadTask(with: request, from: jsonData) { data, response, error in
+//            if let error = error {
+//                DispatchQueue.main.async {
+//                    errorMessage = "Error: \(error.localizedDescription)"
+//                }
+//                return
+//            }
+//
+//            // Handle the response
+//            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+//                DispatchQueue.main.async {
+//                    errorMessage = "Email updated successfully!"
+//                }
+//            } else {
+//                DispatchQueue.main.async {
+//                    errorMessage = "Failed to update email"
+//                }
+//            }
+//        }.resume()
+//    }
+//}
+
+
+//import SwiftUI
+//import FirebaseAuth
+//
+//struct ChangeEmailView: View {
+//    @Environment(\.presentationMode) var presentationMode
+//    @State private var currentPassword: String = ""
+//    @State private var newEmail: String = ""
+//    @State private var errorMessage: String?
+//
+//    var userUID: String  // This should match the argument passed from SettingsView
+//
+//    var body: some View {
+//        VStack(spacing: 20) {
+//            Text("Change Email")
+//                .font(.largeTitle)
+//                .padding()
+//
+//            SecureField("Current Password", text: $currentPassword)
+//                .textFieldStyle(RoundedBorderTextFieldStyle())
+//                .padding(.horizontal)
+//
+//            TextField("New Email", text: $newEmail)
+//                .keyboardType(.emailAddress)
+//                .textFieldStyle(RoundedBorderTextFieldStyle())
+//                .padding(.horizontal)
+//
+//            if let errorMessage = errorMessage {
+//                Text(errorMessage)
+//                    .foregroundColor(.red)
+//                    .padding()
+//            }
+//
+//            Button(action: updateEmail) {
+//                Text("Update Email")
+//                    .font(.headline)
+//                    .padding()
+//                    .frame(maxWidth: .infinity)
+//                    .background(Color.blue)
+//                    .foregroundColor(.white)
+//                    .cornerRadius(10)
+//            }
+//            .padding()
+//
+//            Spacer()
+//        }
+//        .padding(.top)
+//        .background(Color(.systemGroupedBackground))
+//        .navigationTitle("Change Email")
+//        .navigationBarTitleDisplayMode(.inline)
+//    }
+//
+//    private func updateEmail() {
+//        guard !newEmail.isEmpty else {
+//            errorMessage = "New email cannot be empty."
+//            return
+//        }
+//
+//        // Use the Render deployment URL here
+//        let url = URL(string: "https://your-app-name.onrender.com/update-email")!
+//
+//        var request = URLRequest(url: url)
+//        request.httpMethod = "POST"
+//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//
+//        // Create the JSON payload
+//        let jsonPayload = [
+//            "uid": userUID,  // Pass the actual UID here
+//            "newEmail": newEmail
+//        ]
+//
+//        // Convert to JSON data
+//        guard let jsonData = try? JSONSerialization.data(withJSONObject: jsonPayload) else {
+//            errorMessage = "Failed to create JSON payload"
+//            return
+//        }
+//
+//        // Send the request
+//        URLSession.shared.uploadTask(with: request, from: jsonData) { data, response, error in
+//            if let error = error {
+//                DispatchQueue.main.async {
+//                    errorMessage = "Error: \(error.localizedDescription)"
+//                }
+//                return
+//            }
+//
+//            // Handle the response
+//            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+//                DispatchQueue.main.async {
+//                    errorMessage = "Email updated successfully!"
+//                }
+//            } else {
+//                DispatchQueue.main.async {
+//                    errorMessage = "Failed to update email"
+//                }
+//            }
+//        }.resume()
+//    }
+//}
+
+
 import SwiftUI
 import FirebaseAuth
+import FirebaseFirestore
+
 struct ChangeEmailView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var currentPassword: String = ""
     @State private var newEmail: String = ""
     @State private var errorMessage: String?
-
-    var userUID: String  // This should match the argument passed from SettingsView
+    @State private var successMessage: String?
 
     var body: some View {
         VStack(spacing: 20) {
@@ -127,6 +340,12 @@ struct ChangeEmailView: View {
             if let errorMessage = errorMessage {
                 Text(errorMessage)
                     .foregroundColor(.red)
+                    .padding()
+            }
+            
+            if let successMessage = successMessage {
+                Text(successMessage)
+                    .foregroundColor(.green)
                     .padding()
             }
 
@@ -150,59 +369,56 @@ struct ChangeEmailView: View {
     }
 
     private func updateEmail() {
-        guard !newEmail.isEmpty else {
-            errorMessage = "New email cannot be empty."
+        let db = Firestore.firestore()
+        guard let userID = Auth.auth().currentUser?.uid,
+              let userEmail = Auth.auth().currentUser?.email?.lowercased(), // Unwrap and lowercase
+              let currentUser = Auth.auth().currentUser else {
+            self.errorMessage = "Unable to get user information."
             return
         }
 
-        // Prepare the URL and request
-//        let url = URL(string: "http://localhost:3000/update-email")!
-        
-        //run this commnd on your terminal
-        //cd ~/Desktop/TripPlanner4/firebase-admin-sdk-project
-       // node server.js
+        // Trim and lowercase the new email for consistency
+        let newEmail = self.newEmail.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let currentPassword = self.currentPassword.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        //for running on your computer
-        let url = URL(string: "http://10.19.41.72:3000/update-email")!
-        
-        //for running on iphone
-       // let url = URL(string: "http://10.19.41.72:3000/update-email")!
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        // Create the JSON payload
-        let jsonPayload = [
-            "uid": userUID,  // Pass the actual UID here
-            "newEmail": newEmail
-        ]
-
-        // Convert to JSON data
-        guard let jsonData = try? JSONSerialization.data(withJSONObject: jsonPayload) else {
-            errorMessage = "Failed to create JSON payload"
+        guard !newEmail.isEmpty, !currentPassword.isEmpty else {
+            self.errorMessage = "Please fill in all fields."
             return
         }
 
-        // Send the request
-        URLSession.shared.uploadTask(with: request, from: jsonData) { data, response, error in
-            if let error = error {
-                DispatchQueue.main.async {
-                    errorMessage = "Error: \(error.localizedDescription)"
-                }
-                return
-            }
+        // Update Firestore if the new email is different from the current one
+        if newEmail != userEmail {
+            let credential = EmailAuthProvider.credential(withEmail: userEmail, password: currentPassword)
 
-            // Handle the response
-            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
-                DispatchQueue.main.async {
-                    errorMessage = "Email updated successfully!"
+            // Re-authenticate the user
+            currentUser.reauthenticate(with: credential) { result, error in
+                if let error = error {
+                    self.errorMessage = "Re-authentication failed: \(error.localizedDescription)"
+                    return
                 }
-            } else {
-                DispatchQueue.main.async {
-                    errorMessage = "Failed to update email"
+
+                // Proceed to update the email
+                currentUser.updateEmail(to: newEmail) { error in
+                    if let error = error {
+                        self.errorMessage = "Failed to update email: \(error.localizedDescription)"
+                    } else {
+                        // Update Firestore document with the new email
+                        db.collection("Users").document(userID).updateData([
+                            "UserEmail": newEmail
+                        ]) { err in
+                            if let err = err {
+                                self.errorMessage = "Failed to update Firestore: \(err.localizedDescription)"
+                            } else {
+                                self.successMessage = "Email updated successfully!"
+                                self.errorMessage = nil
+                            }
+                        }
+                    }
                 }
             }
-        }.resume()
+        } else {
+            self.errorMessage = "New email is the same as the current email."
+        }
     }
+
 }

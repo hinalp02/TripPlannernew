@@ -593,8 +593,6 @@ struct PastTripsView: View {
 
             if selectedTab == .planTrip {
                 SecondView(userUID: userUID)
-            } else if selectedTab == .profile {
-                ProfileView(userUID: userUID)
             } else if selectedTab == .settings {
                 SettingsView(userUID: userUID)
             }

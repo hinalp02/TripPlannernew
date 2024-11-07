@@ -395,6 +395,7 @@ class LoginController: UIViewController {
         self.signInButton.addTarget(self, action: #selector(didTapSignIn), for: .touchUpInside)
         self.newUserButton.addTarget(self, action: #selector(didTapNewUser), for: .touchUpInside)
         self.forgotPasswordButton.addTarget(self, action: #selector(didTapForgotPassword), for: .touchUpInside)
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -482,41 +483,78 @@ class LoginController: UIViewController {
             AlertManager.showInvalidEmailAlert(on: self)
             return
         }
-        
+
         // Password check
         if !Validator.isPasswordValid(for: loginRequest.password) {
             AlertManager.showInvalidPasswordAlert(on: self)
             return
         }
-        
+
+        // Attempt to sign in directly
         AuthService.shared.signIn(with: loginRequest) { error in
             if let error = error {
-                AlertManager.showSignInErrorAlert(on: self, with: error)
+                self.handleSignInError(error)
                 return
             }
             
+            // Successful login, proceed to the next step
             if let sceneDelegate = self.view.window?.windowScene?.delegate as? SceneDelegate {
                 sceneDelegate.checkAuthentication()
             }
         }
     }
     
+
+    // Method to handle specific Firebase Auth Errors
+    private func handleSignInError(_ error: Error) {
+        guard let authError = AuthErrorCode(rawValue: error._code) else {
+            // Fallback to a generic error alert if no specific error code matches
+            AlertManager.showSignInErrorAlert(on: self, with: error)
+            return
+        }
+
+        switch authError {
+        case .wrongPassword:
+            // Incorrect password entered for an existing account
+            let customError = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Incorrect password. Please try again."])
+            AlertManager.showSignInErrorAlert(on: self, with: customError)
+        
+        case .userNotFound:
+            // Email entered does not correspond to any account
+            let customError = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Account doesn't exist. Please create an account or sign in with an existing one."])
+            AlertManager.showSignInErrorAlert(on: self, with: customError)
+        
+        case .invalidEmail:
+            // The email format is invalid
+            let customError = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "The email address is badly formatted. Please enter a valid email."])
+            AlertManager.showSignInErrorAlert(on: self, with: customError)
+        
+        case .invalidCredential:
+            // Handle credentials issues by suggesting possible causes
+            let customError = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Incorrect password or the account doesn’t exist. Please check your email or password and try again."])
+            AlertManager.showSignInErrorAlert(on: self, with: customError)
+        
+        default:
+            // For any other unspecified errors
+            AlertManager.showSignInErrorAlert(on: self, with: error)
+        }
+    }
+
+     
     @objc private func didTapNewUser() {
         let vc = RegisterController()
         self.navigationController?.pushViewController(vc, animated: false)
     }
     
     @objc private func goToSecondView() {
-        // Retrieve the user UID from Firebase Auth
         guard let userUID = Auth.auth().currentUser?.uid else {
             print("User is not logged in.")
             return
         }
         
-        // Wrap SecondView in a UIHostingController and pass userUID
-        let secondView = SecondView(userUID: userUID)  // Pass userUID to SecondView
-        let hostingController = UIHostingController(rootView: secondView)  // Wrap in UIHostingController
-        self.navigationController?.pushViewController(hostingController, animated: true)  // Push the hosting controller
+        let secondView = SecondView(userUID: userUID)
+        let hostingController = UIHostingController(rootView: secondView)
+        self.navigationController?.pushViewController(hostingController, animated: true)
     }
 
     

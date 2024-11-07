@@ -1390,11 +1390,6 @@ struct SecondView: View {
             switch label {
             case "Plan Trip":
                 resetPlanController()  // Clear the previous trip when navigating to the Plan Trip tab
-            case "Profile":
-                if let window = UIApplication.shared.windows.first {
-                    window.rootViewController = UIHostingController(rootView: ProfileView(userUID: userUID))
-                    window.makeKeyAndVisible()
-                }
             case "Past Trips":
                 if let window = UIApplication.shared.windows.first {
                     window.rootViewController = UIHostingController(rootView: PastTripsView(userUID: userUID))

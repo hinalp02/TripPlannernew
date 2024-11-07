@@ -1160,6 +1160,9 @@
 //            }
 //    }
 //}
+
+
+
 import SwiftUI
 
 struct SecondView: View {
@@ -1176,14 +1179,14 @@ struct SecondView: View {
 
     let gradientStartColor = Color(UIColor(red: 141/255, green: 172/255, blue: 225/255, alpha: 1))
     let gradientEndColor = Color(UIColor(red: 41/255, green: 102/255, blue: 117/255, alpha: 1))
-    
+
     var userUID: String
-    
+
     var body: some View {
         NavigationView {
             ZStack {
                 Color.white.edgesIgnoringSafeArea(.all)
-                
+
                 VStack(spacing: 25) {
                     // Blue Gradient Box at the Top
                     ZStack(alignment: .top) {
@@ -1197,13 +1200,13 @@ struct SecondView: View {
                             )
                             .frame(height: 300)
                             .edgesIgnoringSafeArea(.top)
-                        
+
                         VStack {
                             Text("Where are you headed?")
                                 .font(.title)
                                 .foregroundColor(.white)
                                 .padding(.top, 100) // Adjusted padding for better alignment
-                            
+
                             // Destination Menu inside the gradient box
                             Menu {
                                 ForEach(cities, id: \.self) { city in
@@ -1290,7 +1293,7 @@ struct SecondView: View {
                         }
                     }
                     .frame(width: buttonWidth)
-                    
+
                     // NavigationLink to ItineraryView
                     NavigationLink(
                         destination: ItineraryView(

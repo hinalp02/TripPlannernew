@@ -7,21 +7,42 @@
 //hello//
 import SwiftUI
 import FirebaseAuth
+import FirebaseFirestore
+import FirebaseStorage
+import Combine
 
 struct SettingsView: View {
+    @State private var username: String = ""
+    @State private var profileImage: UIImage? = nil
+    @State private var isEditing: Bool = false
+    @State private var showingImagePicker = false
+    @State private var loading: Bool = true
+    @State private var showRemovePictureAlert = false
+    @State private var isPictureHighlighted = false
+    @State private var selectedTab: Tab = .settings
+    @FocusState private var isNameFocused: Bool
+    @State private var selectedButton: String? = nil
+    @State private var isEditProfilePressed = false
+    @State private var isChangePasswordPressed = false
+    @State private var isChangeEmailPressed = false
+    @State private var isLogoutPressed = false
+    @State private var isSaveChangesPressed = false
+    @FocusState private var isNameFieldFocused: Bool
+    @State private var isPressed: Bool = false
+
+    let userUID: String
+
     let gradientStartColor = Color(UIColor(red: 141/255, green: 172/255, blue: 225/255, alpha: 1))
     let gradientEndColor = Color(UIColor(red: 41/255, green: 102/255, blue: 117/255, alpha: 1))
-
-    @State private var selectedTab: Tab = .settings  // Manage the active tab state
-    var userUID: String
+    let borderColor = Color(UIColor(red: 41/255, green: 102/255, blue: 117/255, alpha: 1))
+    let textBoxBackgroundColor = Color(UIColor(white: 1, alpha: 0.85))
 
     var body: some View {
         NavigationView {
             ZStack {
                 Color.white.edgesIgnoringSafeArea(.all)
-
+               
                 VStack(spacing: 0) {
-                    // Fancy Header with Blue Gradient Background
                     ZStack(alignment: .top) {
                         RoundedRectangle(cornerRadius: 30, style: .continuous)
                             .fill(
@@ -33,70 +54,190 @@ struct SettingsView: View {
                             )
                             .frame(height: 300)
                             .edgesIgnoringSafeArea(.top)
+                       
+                        VStack(spacing: 8) {
+                            Spacer().frame(height: 15)
 
-                        VStack {
-                            Spacer().frame(height: 70)  // Adjust spacing to align title
+                            if isEditing {
+                                HStack {
+                                    TextField("Name", text: $username)
+                                        .font(.system(size: 18))
+                                        .padding(.horizontal, 15)
+                                        .padding(.vertical, 10)
+                                        .foregroundColor(.black)
+                                        .background(Color(UIColor(red: 230/255, green: 240/255, blue: 250/255, alpha: 1)))
+                                        .cornerRadius(8)
+                                        .focused($isNameFieldFocused)
+                                        .onAppear {
+                                            isNameFieldFocused = true
+                                        }
+                                        .multilineTextAlignment(.center)
+                                        .fixedSize(horizontal: true, vertical: false)
+                                        .textInputAutocapitalization(.never)
+                                        .autocorrectionDisabled(true)
+                                        .keyboardType(.default)
+                                        .focused($isNameFocused)
+                                    Image(systemName: "pencil.circle.fill")
+                                        .foregroundColor(.gray)
+                                        .font(.system(size: 20))
+                                        .padding(.trailing, 10)
+                                        .onTapGesture {
+                                            isNameFocused = true
+                                            isNameFieldFocused = true
+                                        }
+                                }
+                                .background(Color(UIColor(red: 230/255, green: 240/255, blue: 250/255, alpha: 1)))
+                                .cornerRadius(8)
+                                .overlay(RoundedRectangle(cornerRadius: 8).stroke(borderColor, lineWidth: 2))
+                                .padding(.bottom, 15)
+                            } else {
+                                Text(username.isEmpty ? "Guest" : username)
+                                    .font(.system(size: 28, weight: .bold))
+                                    .foregroundColor(.white)
+                                    .padding(.top, 5)
+                                    .onTapGesture {
+                                        isEditing = true
+                                        isNameFieldFocused = true
+                                    }
+                            }
 
-                            // Fancy Title inside the gradient box
-                            Text("Settings")
-                                .font(.system(size: 40, weight: .bold, design: .rounded))  // Larger, rounded bold font
-                                .foregroundColor(.white)
-                                .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 5)  // Add subtle shadow
-                                .padding(.top, 30)  // Adjusted padding for better alignment
-                                .frame(maxWidth: .infinity)  // Center the header
+                            ZStack {
+                                if let image = profileImage {
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 95, height: 95)
+                                        .clipShape(Circle())
+                                        .overlay(Circle().stroke(isPictureHighlighted ? Color(red: 96/255, green: 131/255, blue: 153/255) : Color.white, lineWidth: 3))
+                                        .onTapGesture {
+                                            isPictureHighlighted.toggle()
+                                            showingImagePicker = true
+                                        }
+                                        .offset(y: isEditing ? -10 : 0)
+                                   
+                                    if isEditing {
+                                        Image(systemName: "pencil.circle.fill")
+                                            .foregroundColor(.white)
+                                            .font(.system(size: 28))
+                                            .background(Circle().fill(Color.black.opacity(0.6)))
+                                            .offset(x: 35, y: 28)
+                                            .onTapGesture {
+                                                showingImagePicker = true
+                                            }
+                                    }
+                                } else {
+                                    Text(initials(for: username))
+                                        .font(.largeTitle)
+                                        .foregroundColor(.white)
+                                        .frame(width: 100, height: 100)
+                                        .background(Circle().fill(Color.gray))
+                                        .overlay(Circle().stroke(isPictureHighlighted ? Color(red: 96/255, green: 131/255, blue: 153/255) : Color.white, lineWidth: 3))
+                                        .onTapGesture {
+                                            isPictureHighlighted.toggle()
+                                            showingImagePicker = true
+                                        }
+                                   
+                                    if isEditing {
+                                        Image(systemName: "pencil.circle.fill")
+                                            .foregroundColor(.white)
+                                            .font(.system(size: 28))
+                                            .background(Circle().fill(Color.black.opacity(0.6)))
+                                            .offset(x: 35, y: 35)
+                                            .onTapGesture {
+                                                showingImagePicker = true
+                                            }
+                                    }
+                                }
+                            }
+
+                            if isEditing {
+                                Button(action: {
+                                    showRemovePictureAlert = true
+                                    profileImage = nil
+                                }) {
+                                    Text("Remove Profile Picture")
+                                        .font(.system(size: 14))
+                                        .padding(.horizontal, 15)
+                                        .padding(.vertical, 6)
+                                        .background(Color(red: 96/255, green: 131/255, blue: 153/255))
+                                        .foregroundColor(.white)
+                                        .cornerRadius(8)
+                                        .shadow(radius: 2)
+                                }
+                                .padding(.top, 5)
+                                .padding(.bottom, 25)
+                            }
+                        }
+                        .offset(y: -10)
+                    }
+                   
+                    ScrollView {
+                        VStack(alignment: .center, spacing: 20) {
+                            if isEditing {
+                                Button(action: saveProfileChanges) {
+                                    Text("Save Changes")
+                                }
+                                .buttonStyle(PressableButtonStyle())
+                                .padding(.bottom, 30) // Additional space below Save Changes button
+                                .onLongPressGesture(minimumDuration: 0.1, pressing: { isPressing in
+                                    isSaveChangesPressed = isPressing
+                                }) {
+                                    saveProfileChanges()
+                                }
+                                .padding()
+                                .onTapGesture {
+                                    isEditing = false
+                                    isNameFocused = true
+                                }
+                            } else {
+                                Button(action: {
+                                    isEditing.toggle()
+                                    isNameFocused = isEditing
+                                    selectedButton = "Edit Profile"
+                                    isNameFieldFocused = isEditing
+                                }) {
+                                    Text("Edit Profile")
+                                }
+                                .modifier(CustomButtonStyle(isSelected: isEditProfilePressed))
+                                .onLongPressGesture(minimumDuration: 0.1, pressing: { isPressing in
+                                    isEditProfilePressed = isPressing
+                                }) {}
+                                .padding(.horizontal)
+                            }
+                           
+                            NavigationLink(destination: ChangePasswordView()) {
+                                Text("Change Password")
+                            }
+                            .modifier(CustomButtonStyle(isSelected: isChangePasswordPressed))
+                            .onLongPressGesture(minimumDuration: 0.1, pressing: { isPressing in
+                                isChangePasswordPressed = isPressing
+                            }) {}
+                            .padding(.horizontal)
+                           
+                            NavigationLink(destination: ChangeEmailView()) {
+                                Text("Change Email")
+                            }
+                            .modifier(CustomButtonStyle(isSelected: isChangeEmailPressed))
+                            .onLongPressGesture(minimumDuration: 0.1, pressing: { isPressing in
+                                isChangeEmailPressed = isPressing
+                            }) {}
+                            .padding(.horizontal)
+                           
+                            Button(action: logout) {
+                                Text("Logout")
+                            }
+                            .modifier(CustomButtonStyle(isSelected: isLogoutPressed))
+                            .onLongPressGesture(minimumDuration: 0.1, pressing: { isPressing in
+                                isLogoutPressed = isPressing
+                            }) {}
+                            .padding(.horizontal)
                         }
                     }
 
-                    // Content Section Below the Gradient
-                    VStack(spacing: 20) {
-                        NavigationLink(destination: ChangePasswordView()) {
-                            Text("Change Password")
-                                .font(.headline)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(Color.blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                        }
-                        .padding(.horizontal)
 
-                        NavigationLink(destination: ChangeEmailView()) {
-                            Text("Change Email")
-                                .font(.headline)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(Color.blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                        }
-                        .padding(.horizontal)
+                   
 
-                        Button(action: logout) {
-                            Text("Logout")
-                                .font(.headline)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(Color.red)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                        }
-                        .padding(.horizontal)
-
-                        Spacer()
-                    }
-                    .padding(.top, 20)
-                    .padding(.horizontal, 20)
-                    .background(Color.white)
-                    .cornerRadius(10)
-                    .shadow(radius: 5)
-                    .padding(.horizontal)
-
-                    Spacer()
-
-                    // Tab Bar
                     VStack {
-                        Spacer()  // Pushes the tab bar to the bottom
-
                         HStack {
                             Spacer()
                             TabBarItem(iconName: "briefcase", label: "Past Trips", isSelected: selectedTab == .pastTrips) {
@@ -120,15 +261,44 @@ struct SettingsView: View {
                         .background(Color.white)
                         .cornerRadius(8)
                         .shadow(radius: 5)
-                        .padding(.bottom, 0)  // Ensure it is touching the bottom edge
                     }
-                    .edgesIgnoringSafeArea(.bottom)  // Ensure the tab bar extends to the bottom and touches it
+                    .edgesIgnoringSafeArea(.bottom)
+                    .padding(.bottom, -35)
                 }
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationBarHidden(true)
+                .ignoresSafeArea(.keyboard, edges: .bottom)
+                .alert(isPresented: $showRemovePictureAlert) {
+                    Alert(
+                        title: Text("Remove Profile Picture"),
+                        message: Text("Are you sure you want to remove your profile picture?"),
+                        primaryButton: .destructive(Text("Remove")) {
+                            profileImage = nil
+                            let db = Firestore.firestore()
+                            db.collection("users").document(userUID).updateData([
+                                "profileImageUrl": FieldValue.delete()
+                            ]) { error in
+                                if let error = error {
+                                    print("Error removing profile image URL: \(error.localizedDescription)")
+                                } else {
+                                    print("Profile image URL removed successfully.")
+                                }
+                            }
+                        },
+                        secondaryButton: .cancel()
+                    )
+                }
             }
+            .navigationViewStyle(StackNavigationViewStyle())
+            .sheet(isPresented: $showingImagePicker) {
+                ImagePicker(selectedImage: $profileImage)
+            }
+            .onAppear(perform: loadUserData)
         }
-        .navigationViewStyle(StackNavigationViewStyle())  // Ensures proper navigation view behavior
+    }
+
+    private func initials(for name: String) -> String {
+        let components = name.split(separator: " ")
+        let initials = components.compactMap { $0.first }.map { String($0) }.joined()
+        return String(initials.prefix(2)).uppercased()
     }
 
     private func logout() {
@@ -144,25 +314,103 @@ struct SettingsView: View {
         }
     }
 
-    // Tab Bar Item View
-    private func TabBarItem(iconName: String, label: String, isSelected: Bool = false, action: @escaping () -> Void) -> some View {
-        VStack {
-            Image(systemName: iconName)
-                .foregroundColor(isSelected ? gradientEndColor : .blue)  // Highlight if selected
-            Text(label)
-                .font(.footnote)
-                .foregroundColor(isSelected ? gradientEndColor : .blue)  // Highlight if selected
-        }
-        .padding(.vertical, 10)
-        .background(isSelected ? gradientEndColor.opacity(0.2) : Color.clear)  // Highlight background if selected
-        .cornerRadius(10)
-        .onTapGesture {
-            action()
-            self.selectedTab = Tab(rawValue: label) ?? .settings  // Update selected tab
+    private func saveProfileChanges() {
+        guard let userUID = Auth.auth().currentUser?.uid else { return }
+        let db = Firestore.firestore()
+        db.collection("users").document(userUID).updateData([
+            "username": username
+        ]) { error in
+            if let error = error {
+                print("Error saving profile data: \(error.localizedDescription)")
+                return
+            }
+            print("Profile data saved successfully.")
+            if let newImage = profileImage {
+                uploadProfileImage(newImage)
+            } else {
+                self.isEditing = false
+                loadUserData()
+            }
         }
     }
 
-    // Function to navigate between views
+    private func uploadProfileImage(_ image: UIImage) {
+        guard let userUID = Auth.auth().currentUser?.uid else { return }
+        let storageRef = Storage.storage().reference().child("profile_images/\(userUID)/profile.jpg")
+        guard let imageData = image.jpegData(compressionQuality: 0.75) else { return }
+        storageRef.putData(imageData, metadata: nil) { metadata, error in
+            if let error = error {
+                print("Error uploading image: \(error.localizedDescription)")
+                return
+            }
+            storageRef.downloadURL { url, error in
+                if let error = error {
+                    print("Error getting download URL: \(error.localizedDescription)")
+                    return
+                }
+                if let urlString = url?.absoluteString {
+                    self.updateUserProfileImageUrl(urlString)
+                    self.isEditing = false
+                    loadUserData()
+                }
+            }
+        }
+    }
+
+    private func updateUserProfileImageUrl(_ urlString: String) {
+        guard let userUID = Auth.auth().currentUser?.uid else { return }
+        let db = Firestore.firestore()
+        db.collection("users").document(userUID).updateData([
+            "profileImageUrl": urlString
+        ]) { error in
+            if let error = error {
+                print("Error updating profile image URL: \(error.localizedDescription)")
+                return
+            }
+            print("Profile image URL updated successfully.")
+        }
+    }
+
+    private func loadUserData() {
+        guard let userUID = Auth.auth().currentUser?.uid else { return }
+        let db = Firestore.firestore()
+        db.collection("users").document(userUID).getDocument { document, error in
+            if let error = error {
+                print("Failed to load user data: \(error.localizedDescription)")
+                self.loading = false
+                return
+            }
+            if let document = document, document.exists {
+                let data = document.data()
+                self.username = data?["username"] as? String ?? ""
+                self.loading = false
+                if let profileImageUrl = data?["profileImageUrl"] as? String, !profileImageUrl.isEmpty {
+                    loadProfileImage(from: profileImageUrl)
+                } else {
+                    self.profileImage = nil
+                }
+            } else {
+                print("User data not found.")
+                self.loading = false
+            }
+        }
+    }
+
+    private func loadProfileImage(from urlString: String) {
+        guard !urlString.isEmpty, let url = URL(string: urlString) else { return }
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                print("Error loading profile image: \(error.localizedDescription)")
+                return
+            }
+            if let data = data, let uiImage = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    self.profileImage = uiImage
+                }
+            }
+        }.resume()
+    }
+
     private func navigateTo(_ tab: Tab) {
         if let window = UIApplication.shared.windows.first {
             switch tab {
@@ -171,16 +419,32 @@ struct SettingsView: View {
             case .planTrip:
                 window.rootViewController = UIHostingController(rootView: SecondView(userUID: userUID))
             case .profile:
-                window.rootViewController = UIHostingController(rootView: ProfileView(userUID: userUID))
+                window.rootViewController = UIHostingController(rootView: SettingsView(userUID: userUID))
             case .settings:
                 window.rootViewController = UIHostingController(rootView: SettingsView(userUID: userUID))
             }
             window.makeKeyAndVisible()
         }
     }
+
+    private func TabBarItem(iconName: String, label: String, isSelected: Bool = false, action: @escaping () -> Void) -> some View {
+        VStack {
+            Image(systemName: iconName)
+                .foregroundColor(isSelected ? gradientEndColor : .blue)
+            Text(label)
+                .font(.footnote)
+                .foregroundColor(isSelected ? gradientEndColor : .blue)
+        }
+        .padding(.vertical, 10)
+        .background(isSelected ? gradientEndColor.opacity(0.2) : Color.clear)
+        .cornerRadius(10)
+        .onTapGesture {
+            action()
+            self.selectedTab = Tab(rawValue: label) ?? .settings
+        }
+    }
 }
 
-// Enum to manage tab selection
 extension SettingsView {
     enum Tab: String {
         case pastTrips = "Past Trips"
@@ -189,3 +453,34 @@ extension SettingsView {
         case settings = "Settings"
     }
 }
+
+struct CustomButtonStyle: ViewModifier {
+    var isSelected: Bool
+
+    func body(content: Content) -> some View {
+        content
+            .font(.headline)
+            .padding()
+            .frame(width: UIScreen.main.bounds.width * 0.8, height: 50)
+//            .background(isSelected ? Color(red: 96/255, green: 131/255, blue: 153/255) : Color(red: 200/255, green: 228/255, blue: 250/255))
+//            .foregroundColor(isSelected ? .white : .black)
+            .background(isSelected ? Color.teal.opacity(0.3) : Color.teal)
+
+            .foregroundColor(isSelected ? .black : .white)
+            .cornerRadius(8)
+    }
+}
+
+struct PressableButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.headline)
+            .padding()
+            .frame(width: UIScreen.main.bounds.width * 0.8, height: 50)
+            .background(configuration.isPressed ? Color(red: 96/255, green: 131/255, blue: 153/255) : Color(red: 200/255, green: 228/255, blue: 250/255))
+            .foregroundColor(configuration.isPressed ? .white : .black)
+            .cornerRadius(8)
+    }
+}
+
+

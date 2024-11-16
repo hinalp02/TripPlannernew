@@ -8,79 +8,134 @@
 import Foundation
 import SwiftUI
 
-// this class is responsible for fetching images from the Unsplash API
+// This class is responsible for fetching images from the Unsplash API
 class ImageController: ObservableObject {
-    // an ImageController instance for shared usage
+    // An ImageController instance for shared usage
     static let shared = ImageController()
     private init() {}
     
-    // unsplash API access key
+    // Unsplash API access key
     var token = "DSGVIqrflJklVgCo2cqZ6gyBhm-xSvZk99P-jfIL9Dc"
-    // published results array to store fetched results
+    // Published results array to store fetched results
     @Published var results = [Result]()
     
-    // this function is to search images based on a location
+    
+    private var rateLimitReached = false
+    
+    
+    // This function is to search images based on a location
     func search(for location: String, completion: @escaping (String?) -> Void) {
-        // construct the URL string with a search query
+        
+        // Check if rate limit has been reached
+        if rateLimitReached {
+            // Use fallback image
+            let fallbackImageName = randomImageName(for: location)
+            completion(fallbackImageName)
+            return
+        }
+        
+        
+        
+        // Construct the URL string with a search query
         let urlString = "https://api.unsplash.com/search/photos?query=\(location)&orientation=landscape"
-        // if the url failed to generated, return directly
         guard let url = URL(string: urlString) else {
             completion(nil)
             return
         }
-        // create a URLRequest object with the URL
-        var request = URLRequest(url: url)
-        // set the HTTP method to GET
-        request.httpMethod = "GET"
-        // set the authorization header
-        request.setValue("Client-ID \(token)", forHTTPHeaderField: "Authorization")
         
-        // create a data task to perform the network request
+        // Create a URLRequest object with the URL
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("Client-ID \(token)", forHTTPHeaderField: "Authorization")
+
+        // Create a data task to perform the network request
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            // ensure data is not nil. if nil, return
+            // Handle the response headers to check rate limit
+            if let httpResponse = response as? HTTPURLResponse {
+                self.logRateLimitHeaders(httpResponse.allHeaderFields)
+            }
+            
             guard let data = data else {
                 completion(nil)
                 return
             }
+            
+            // Decode the JSON response
             do {
-                // decode the JSON response into a Results object
                 let res = try JSONDecoder().decode(Results.self, from: data)
-                // get the URL of the first image in the result
                 let imageUrl = res.results.first?.urls.small
-                // call the completion handler with the image URL
                 completion(imageUrl)
             } catch {
-                // if decoding fails, return
+                print("❗️ Decoding error:", error)
                 completion(nil)
-                print(error)
             }
         }
-        // start the data task
         task.resume()
     }
+    
+    // Logs rate limit information
+    private func logRateLimitHeaders(_ headers: [AnyHashable: Any]) {
+        // Attempt to read headers by exact and lowercase matches for reliability
+        let limitKey = "X-Ratelimit-Limit"
+        let remainingKey = "X-Ratelimit-Remaining"
+        let resetKey = "X-Ratelimit-Reset"
+        
+        let limit = headers[limitKey] as? String ?? headers[limitKey.lowercased()] as? String
+        let remaining = headers[remainingKey] as? String ?? headers[remainingKey.lowercased()] as? String
+        let reset = headers[resetKey] as? String ?? headers[resetKey.lowercased()] as? String
+        
+        if let limit = limit, let remaining = remaining {
+            print("""
+            ----- API Rate Limit -----
+            Limit: \(limit)
+            Remaining: \(remaining)
+            --------------------------
+            """)
+
+            if let remainingRequests = Int(remaining) {
+                if remainingRequests == 0, let reset = reset {
+                    // Set rateLimitReached to true when limit is reached
+                    rateLimitReached = true
+                    let resetDate = Date(timeIntervalSince1970: TimeInterval(reset) ?? 0)
+                    print("⚠️ Rate limit reached. Next reset at \(resetDate)")
+                } else if remainingRequests == 50 {
+                    // Reset rateLimitReached to false when the limit resets
+                    rateLimitReached = false
+                    print("✅ Rate limit has been reset. API access restored.")
+                }
+            }
+        } else {
+            print("⚠️ Rate limit headers are missing or could not be parsed.")
+        }
+    }
+    
+    
+    
+    private func randomImageName(for location: String) -> String {
+        let locationPrefix = location.replacingOccurrences(of: " ", with: "").lowercased()
+        let imageNumber = Int.random(in: 1...8)
+        return "\(locationPrefix)day\(imageNumber)"
+    }
+    
+    
 }
 
-// struct to represent the JSON response from the Unsplash API
+// Struct to represent the JSON response from the Unsplash API
 struct Results: Decodable {
-    // total number of results
     var total: Int
-    // array of Result objects
     var results: [Result]
 }
 
-// struct to represent a single result from the Unsplash API
+// Struct to represent a single result from the Unsplash API
 struct Result: Decodable {
-    // ID of the result
     var id: String
-    // description of the result/image (option)
     var description: String?
-    // URLs object obtaining different sizes of the image
     var urls: URLs
 }
 
-// struct to represent the URLs of an image
+// Struct to represent the URLs of an image
 struct URLs: Decodable {
-    // we are using the small version of the image
     var small: String
 }
+
 

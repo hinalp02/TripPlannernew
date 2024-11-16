@@ -1,10 +1,3 @@
-//
-//  ChangePasswordView.swift
-//  TripPlanner3
-//
-//  Created by stlp on 9/14/24.
-//
-
 import SwiftUI
 import FirebaseAuth
 
@@ -20,6 +13,7 @@ struct CustomTextFieldStyle: TextFieldStyle {
                     .stroke(Color.gray.opacity(0.2), lineWidth: 1) // Light border
             )
             .padding(.horizontal)
+            .frame(width: UIScreen.main.bounds.width * 0.9) // Dynamic width for all screens
     }
 }
 
@@ -29,7 +23,7 @@ struct SelectableButtonStyle: ButtonStyle {
         configuration.label
             .font(.headline)
             .padding()
-            .frame(width: UIScreen.main.bounds.width * 0.8, height: 50)
+            .frame(width: UIScreen.main.bounds.width * 0.8, height: 50) // Dynamic width
             .background(configuration.isPressed ? Color.teal.opacity(0.3) : Color.teal)
             .foregroundColor(.white)
             .cornerRadius(10)
@@ -46,39 +40,44 @@ struct ChangePasswordView: View {
     @State private var errorMessage: String?
 
     var body: some View {
-        VStack(spacing: 15) { // Set fixed spacing between elements
-            Text("Change Password")
-                .font(.largeTitle)
-                .padding()
+        ZStack {
+            Color(.systemGroupedBackground) // Background color that covers entire screen
+                .ignoresSafeArea() // Extends background color to screen edges
 
-            SecureField("Current Password", text: $currentPassword)
-                .textFieldStyle(CustomTextFieldStyle())
+            VStack(spacing: 15) { // Set fixed spacing between elements
+                Text("Change Password")
+                    .font(.largeTitle)
+                    .padding()
 
-            SecureField("New Password", text: $newPassword)
-                .textFieldStyle(CustomTextFieldStyle())
+                SecureField("Current Password", text: $currentPassword)
+                    .textFieldStyle(CustomTextFieldStyle())
 
-            SecureField("Confirm New Password", text: $confirmPassword)
-                .textFieldStyle(CustomTextFieldStyle())
+                SecureField("New Password", text: $newPassword)
+                    .textFieldStyle(CustomTextFieldStyle())
 
-            // Add consistent spacing above and below the error message
-            if let errorMessage = errorMessage {
-                Text(errorMessage)
-                    .foregroundColor(.red)
-                    .padding(.top, 5)  // Equal spacing above error message
-                    .padding(.bottom, 5)  // Equal spacing below error message
-                    .multilineTextAlignment(.center)
+                SecureField("Confirm New Password", text: $confirmPassword)
+                    .textFieldStyle(CustomTextFieldStyle())
+
+                // Add consistent spacing above and below the error message
+                if let errorMessage = errorMessage {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                        .padding(.top, 5)  // Equal spacing above error message
+                        .padding(.bottom, 5)  // Equal spacing below error message
+                        .multilineTextAlignment(.center)
+                        .frame(width: UIScreen.main.bounds.width * 0.9) // Dynamic width for alignment
+                }
+
+                Button(action: changePassword) {
+                    Text("Update Password")
+                }
+                .buttonStyle(SelectableButtonStyle())  // Apply the teal style here
+
+                Spacer()
             }
-
-            Button(action: changePassword) {
-                Text("Update Password")
-            }
-            .buttonStyle(SelectableButtonStyle())  // Apply the teal style here
-
-            Spacer()
+            .padding(.top)
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .padding(.top)
-        .background(Color(.systemGroupedBackground))
-        .navigationBarTitleDisplayMode(.inline)
     }
 
     // Password update logic
@@ -88,7 +87,7 @@ struct ChangePasswordView: View {
             errorMessage = "Please fill in all fields."
             return
         }
-        
+       
         // Check if newPassword and confirmPassword match
         guard newPassword == confirmPassword else {
             errorMessage = "New passwords do not match."

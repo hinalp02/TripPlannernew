@@ -1,10 +1,3 @@
-//
-//  PastTripsView.swift
-//  TripPlanner3
-//
-//  Created by stlp on 9/14/24.
-//
-
 import SwiftUI
 
 struct PastTripsView: View {
@@ -18,6 +11,10 @@ struct PastTripsView: View {
     @State private var username: String = ""
     @State private var trendingCity: String = "Santorini"  // Default value
     @State private var trendingImageName: String = "santorini"  // Default image
+
+    // Define a responsive height based on screen height
+    let buttonHeight: CGFloat = UIScreen.main.bounds.height * 0.1 // 10% of screen height
+    let buttonWidth: CGFloat = UIScreen.main.bounds.width * 0.85 // 85% of screen width
 
     // Cities and corresponding images
     let cities = [
@@ -34,165 +31,214 @@ struct PastTripsView: View {
     ]
 
     var body: some View {
-        ZStack {
-            Color.white.edgesIgnoringSafeArea(.all)
-
-            VStack(spacing: 0) {
-                // Header with profile picture on the right, welcome message, and button
-                VStack(spacing: 10) {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text("\(formattedDate())")
-                                .foregroundColor(.gray)
-                                .font(.subheadline)
-                            Text("Welcome, \(username)!")
-                                .font(.title2)
-                                .foregroundColor(.blue)
-                                .fontWeight(.bold)
+            NavigationView {
+                ZStack {
+                    Color.white.edgesIgnoringSafeArea(.all)
+                    ScrollView {
+                    VStack(spacing: 0) {
+                        VStack(spacing: UIScreen.main.bounds.height * 0.012) {
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text("\(formattedDate())")
+                                        .foregroundColor(.gray)
+                                        .font(.subheadline)
+                                    Text("Welcome, \(username)!")
+                                        .font(.title2.bold())
+                                        .foregroundColor(Color(.systemTeal))
+                                        .fontWeight(.bold)
+                                }
+                                Spacer()
+                                
+                                if let image = profileImage {
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: UIScreen.main.bounds.width * 0.15, height: UIScreen.main.bounds.width * 0.15)
+                                        .clipShape(Circle())
+                                        .overlay(Circle().stroke(Color.white, lineWidth: 2))
+                                } else {
+                                    Text(initials(for: username))
+                                        .font(.largeTitle)
+                                        .foregroundColor(.white)
+                                        .frame(width: UIScreen.main.bounds.width * 0.15, height: UIScreen.main.bounds.width * 0.15)
+                                        .background(Circle().fill(Color.gray))
+                                        .overlay(Circle().stroke(Color.white, lineWidth: 2))
+                                }
+                            }
+                            .padding(.horizontal, UIScreen.main.bounds.width * 0.08) // 30 points = ~8% of screen width
+                            .padding(.top, UIScreen.main.bounds.height * 0.06)
+                            
+                            // cur
+                            
+                            // Trending Section with random city and image
+                            ZStack {
+                                if let trendingImage = UIImage(named: trendingImageName) {
+                                    Image(uiImage: trendingImage)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: UIScreen.main.bounds.width * 0.85, height: UIScreen.main.bounds.height * 0.15)
+                                        .clipped()
+                                        .cornerRadius(UIScreen.main.bounds.width * 0.025)
+                                        .overlay(
+                                            VStack(alignment: .leading, spacing: UIScreen.main.bounds.height * 0.012) {
+                                                Text("Recommended:")
+                                                    .font(.title2)
+                                                    .fontWeight(.black)
+                                                    .foregroundColor(.white)
+                                                
+                                                Text(trendingCity)
+                                                    .font(.subheadline)
+                                                    .fontWeight(.heavy)
+                                                    .foregroundColor(.white)
+                                            }
+                                            .padding(.leading, UIScreen.main.bounds.width * 0.04)
+                                            .padding(.top, UIScreen.main.bounds.height * 0.025),
+                                            alignment: .topLeading
+                                        )
+                                }
+                            }
+                            .padding(.horizontal, UIScreen.main.bounds.width * 0.08) // 30 points as ~8% of screen width
+                            .padding(.top, UIScreen.main.bounds.height * 0.025)
+                            
+                            // "Plan Your Next Trip" button
+                            Button(action: {
+                                selectedTab = .planTrip
+                            }) {
+                                Text("Plan Your Next Trip!")
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .frame(maxWidth: .infinity)
+                                    .background(LinearGradient(
+                                        gradient: Gradient(colors: [gradientStartColor, gradientEndColor]),
+                                        startPoint: .leading,
+                                        endPoint: .trailing)
+                                    )
+                                    .cornerRadius(UIScreen.main.bounds.width * 0.025) // 10 points as ~2.5% of screen width
+                                    .shadow(radius: UIScreen.main.bounds.width * 0.013)
+                            }
+                            .padding(.horizontal, UIScreen.main.bounds.width * 0.08) // 30 points as ~8% of screen width
+                            .padding(.top, UIScreen.main.bounds.height * 0.05)
                         }
-                        Spacer()
-
-                        if let image = profileImage {
-                            Image(uiImage: image)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 60, height: 60)
-                                .clipShape(Circle())
-                                .overlay(Circle().stroke(Color.white, lineWidth: 2))
-                        } else {
-                            Text(initials(for: username))
-                                .font(.largeTitle)
-                                .foregroundColor(.white)
-                                .frame(width: 60, height: 60)
-                                .background(Circle().fill(Color.gray))
-                                .overlay(Circle().stroke(Color.white, lineWidth: 2))
-                        }
-                    }
-                    .padding(.horizontal, 30)
-                    .padding(.top, 50)
-
-                    // Trending Section with random city and image
-                    ZStack {
                         
-                        if let trendingImage = UIImage(named: trendingImageName) {
-                            Image(uiImage: trendingImage)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: UIScreen.main.bounds.width * 0.85, height: 120)
-                                .clipped()
-                                .cornerRadius(10)
-                                .overlay(
-                                    VStack(alignment: .leading, spacing: 10) {
-                                        // Display the day number on the button
-                                        Text("Recommended:")
-                                            .font(.title2)
-                                            .fontWeight(.black)
-                                            .foregroundColor(.white)
-
-                                        // Displays extra 'view activities' text
-                                        Text(trendingCity)
-                                            .font(.subheadline)
-                                            .fontWeight(.heavy)
-                                            .foregroundColor(.white)
-                                    }
-                                    .padding(.leading, 15) // Adjust padding for text
-                                    .padding(.top, 20),
-                                    alignment: .topLeading
+                        // Adjust the Spacer here to take up the available space
+                        Spacer(minLength: UIScreen.main.bounds.height * 0.06)
+                        
+                        // Past Trips Section
+                        VStack(spacing: UIScreen.main.bounds.height * 0.025) {
+                            Text("Past Trips")
+                                .font(.title2.bold())
+                                .foregroundColor(Color(.systemTeal))
+                                .padding(.top, UIScreen.main.bounds.height * 0.024)
+                            
+                            Text("View trips you recently created on TripPlanner")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                            
+                            // ScrollView for past trips
+                            //ScrollView {
+                            VStack(spacing: UIScreen.main.bounds.height * 0.012) {
+                                ForEach(pastTrips, id: \.self) { trip in
+                                    let components = trip.components(separatedBy: " - ")
+                                    let location = components[0].replacingOccurrences(of: "Trip to ", with: "")
+                                    let cityName = location.split(separator: ",")[0].lowercased().replacingOccurrences(of: " ", with: "")
+                                    let dayAndType = components[1].replacingOccurrences(of: " days", with: "").components(separatedBy: " (")
+                                    let days = Int(dayAndType[0]) ?? 5
+                                    let type = dayAndType[1].replacingOccurrences(of: ")", with: "")
                                     
-                            )
-                        }
-                        //.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
-                    }
-                    .padding(.horizontal, 30)
-                    .padding(.top, 20)
-
-                    // "Plan Your Next Trip" button
-                    Button(action: {
-                        selectedTab = .planTrip
-                    }) {
-                        Text("Plan Your Next Trip!")
-                            .font(.headline)
-                            .foregroundColor(.white)
+                                    let imageName = "\(cityName)day\(days)"
+                                    
+                                    NavigationLink(
+                                        destination: ItineraryView(location: location, days: days, userUID: userUID, selectedTripType: type, planController: PlanController())
+                                    ) {
+                                        ZStack {
+                                            // Full background image
+                                            Image(imageName)
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width: buttonWidth, height: buttonHeight)
+                                                .clipped() // Ensures the image does not overflow the button
+                                            
+                                            // Overlay content
+                                            HStack {
+                                                VStack(alignment: .leading) {
+                                                    Text(trip)
+                                                        .font(.headline)
+                                                        .fontWeight(.bold)
+                                                        .foregroundColor(.white) // Make text visible on image background
+                                                        .frame(maxWidth: .infinity, alignment: .center)
+                                                }
+                                                .padding(.leading, UIScreen.main.bounds.width * 0.04)
+                                                Spacer()
+                                                Image(systemName: "chevron.right")
+                                                    .foregroundColor(.white)
+                                                    .padding(.trailing, UIScreen.main.bounds.width * 0.04)
+                                            }
+                                            .padding()
+                                        }
+                                        .frame(width: buttonWidth, height: buttonHeight)
+                                        .background(Color(.systemGray6).opacity(0.2)) // Optional overlay for contrast
+                                        .cornerRadius(UIScreen.main.bounds.width * 0.025)
+                                        .shadow(radius: UIScreen.main.bounds.width * 0.01)
+                                        .padding(.horizontal, UIScreen.main.bounds.width * 0.05)
+                                        .padding(.top, UIScreen.main.bounds.height * 0.005)
+                                    }
+                                }
+                            }}
+                            
+                            .frame(maxHeight: .infinity) // Ensure ScrollView takes full available space
                             .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(LinearGradient(
-                                gradient: Gradient(colors: [gradientStartColor, gradientEndColor]),
-                                startPoint: .leading,
-                                endPoint: .trailing)
-                            )
-                            .cornerRadius(10)
-                            .shadow(radius: 5)
-                    }
-                    .padding(.horizontal, 30)
-                    .padding(.top, 40)
-                }
-
-                VStack(spacing: 20) {
-                    Text("Past Trips")
-                        .font(.headline)
-                        .foregroundColor(Color(.systemTeal))
-                        .padding(.top, 20)
-
-                    Text("View trips you recently created on TripPlanner")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-
-                    List(pastTrips, id: \.self) { trip in
-                        Text(trip)
-                    }
-                    .listStyle(InsetGroupedListStyle())
-                    .frame(height: 300)
-                }
-                .padding(.horizontal, 20)
-                .padding(.horizontal)
-
-                Spacer()
-
-                // Tab Bar
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        TabBarItem(iconName: "briefcase", label: "Past Trips", isSelected: selectedTab == .pastTrips) {
-                            selectedTab = .pastTrips
-                        }
-                        Spacer()
-                        TabBarItem(iconName: "globe", label: "Plan Trip", isSelected: selectedTab == .planTrip) {
-                            selectedTab = .planTrip
-                        }
-                        Spacer()
-                        TabBarItem(iconName: "person.fill", label: "Profile", isSelected: selectedTab == .profile) {
-                            selectedTab = .profile
-                        }
-                        Spacer()
-                        TabBarItem(iconName: "gearshape", label: "Settings", isSelected: selectedTab == .settings) {
-                            selectedTab = .settings
+                            .background(Color.white)
+                            .cornerRadius(UIScreen.main.bounds.width * 0.06) // Responsive corner radius (6% of screen width)
+                            .padding(.top, UIScreen.main.bounds.height * -0.06) // Responsive top padding for overlap effect
+                            .padding(.bottom, UIScreen.main.bounds.height * 0.06)
                         }
                         Spacer()
                     }
-                    .frame(height: 72)
-                    .background(Color.white)
-                    .cornerRadius(8)
-                    .shadow(radius: 5)
-                    .padding(.bottom, 5)
+                    
+                    // Tab Bar
+                    VStack {
+                        Spacer()
+                        HStack {
+                            Spacer()
+                            TabBarItem(iconName: "briefcase", label: "Past Trips", isSelected: selectedTab == .pastTrips) {
+                                selectedTab = .pastTrips
+                            }
+                            Spacer()
+                            TabBarItem(iconName: "globe", label: "Plan Trip", isSelected: selectedTab == .planTrip) {
+                                selectedTab = .planTrip
+                            }
+                            Spacer()
+                            TabBarItem(iconName: "person.fill", label: "Profile", isSelected: selectedTab == .profile) {
+                                selectedTab = .profile
+                            }
+                            Spacer()
+                            TabBarItem(iconName: "gearshape", label: "Settings", isSelected: selectedTab == .settings) {
+                                selectedTab = .settings
+                            }
+                            Spacer()
+                        }
+                        .frame(height: UIScreen.main.bounds.height * 0.09) // Responsive tab bar height
+                        .background(Color.white)
+                        .cornerRadius(UIScreen.main.bounds.width * 0.02) // Responsive corner radius
+                        .shadow(radius: UIScreen.main.bounds.width * 0.015) // Responsive shadow radius
+                        .padding(.bottom, UIScreen.main.bounds.height * 0.01)
+                    }
+                    .edgesIgnoringSafeArea(.all)
+                    
+                    if selectedTab == .planTrip {
+                        SecondView(userUID: userUID)
+                    } else if selectedTab == .settings {
+                        SettingsView(userUID: userUID)
+                    }
                 }
-                .edgesIgnoringSafeArea(.all)
+                .onAppear {
+                    loadUserProfile()
+                    loadPastTrips()
+                    selectRandomTrendingCity()  // Select a random city on appear
+                }
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarHidden(true)
-
-            if selectedTab == .planTrip {
-                SecondView(userUID: userUID)
-            } else if selectedTab == .settings {
-                SettingsView(userUID: userUID)
-            }
-        }
-        .onAppear {
-            loadUserProfile()
-            loadPastTrips()
-            selectRandomTrendingCity()  // Select a random city on appear
-        }
-    }
+        } // done responsiveness till here
 
     private func formattedDate() -> String {
         let dateFormatter = DateFormatter()
@@ -239,13 +285,16 @@ struct PastTripsView: View {
         VStack {
             Image(systemName: iconName)
                 .foregroundColor(isSelected ? .blue : .blue)
+                .frame(width: UIScreen.main.bounds.width * 0.1, height: UIScreen.main.bounds.height * 0.05) // Responsive icon size
             Text(label)
                 .font(.footnote)
                 .foregroundColor(isSelected ? .blue : .blue)
+                .padding(.top, UIScreen.main.bounds.height * 0.005) // Responsive padding
         }
-        .padding(.vertical, 10)
+        .padding(.vertical, UIScreen.main.bounds.height * 0.01) // Responsive vertical padding
+        .padding(.horizontal, UIScreen.main.bounds.width * 0.02) // Responsive horizontal padding
         .background(isSelected ? Color.blue.opacity(0.2) : Color.clear)
-        .cornerRadius(10)
+        .cornerRadius(UIScreen.main.bounds.width * 0.025) // Responsive corner radius
         .onTapGesture {
             action()
         }

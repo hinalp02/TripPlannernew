@@ -24,7 +24,6 @@ class PlanController: ObservableObject {
    // new API key temp
    private let openAI = OpenAI(apiToken: "temp")
 
-
    // unique key for saving past trips
    private let pastTripsKey = "PastTripsKey_"  // Base key to store past trips
    

@@ -166,8 +166,11 @@ class PlanController: ObservableObject {
                // all activities have been generated so the flag is now true
                self.hasGeneratedActivities = true
                
+               // Convert the comma-separated `type` string into a `Set<String>`
+                let typesSet = Set(type.split(separator: ",").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) })
+               
                // save the trip after activities are generated successfully
-               self.saveTrip(userUID: userUID, location: location, days: days, type: type)
+               self.saveTrip(userUID: userUID, location: location, days: days, types: typesSet)
            }
            
        } catch {
@@ -177,10 +180,17 @@ class PlanController: ObservableObject {
    }
    
    // function to save the planned trip for a specific user
-   func saveTrip(userUID: String, location: String, days: Int, type: String) {
+   func saveTrip(userUID: String, location: String, days: Int, types: Set<String>) {
        var pastTrips = getPastTrips(userUID: userUID)
-       let trip = "Trip to \(location) - \(days) days (\(type))"
-       pastTrips.insert(trip, at: 0)
+       let typesString = types.joined(separator: ", ")
+       let trip = "Trip to \(location) - \(days) days (\(typesString))"
+       //pastTrips.insert(trip, at: 0)
+       
+       // Check if the trip already exists in the list
+       if !pastTrips.contains(trip) {
+           pastTrips.insert(trip, at: 0) // Insert the new trip at the top
+       }
+       
        // limit to 5 trips
        if pastTrips.count > 5 {
            pastTrips = Array(pastTrips.prefix(5))
@@ -188,7 +198,7 @@ class PlanController: ObservableObject {
        // Save back to UserDefaults using a key specific to the user
        UserDefaults.standard.set(pastTrips, forKey: "\(pastTripsKey)\(userUID)")
    }
-   
+
    // Function to retrieve past trips for a specific user
    func getPastTrips(userUID: String) -> [String] {
        return UserDefaults.standard.stringArray(forKey: "\(pastTripsKey)\(userUID)") ?? []

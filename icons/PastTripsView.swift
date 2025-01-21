@@ -537,34 +537,7 @@ struct PastTripsView: View {
                         Spacer()
                     }
                     
-                    // Tab Bar
-                    VStack {
-                        Spacer()
-                        HStack {
-                            Spacer()
-                            TabBarItem(iconName: "briefcase", label: "Past Trips", isSelected: selectedTab == .pastTrips) {
-                                selectedTab = .pastTrips
-                            }
-                            Spacer()
-                            TabBarItem(iconName: "globe", label: "Plan Trip", isSelected: selectedTab == .planTrip) {
-                                selectedTab = .planTrip
-                            }
-                            Spacer()
-                            TabBarItem(iconName: "person.fill", label: "Profile", isSelected: selectedTab == .profile) {
-                                selectedTab = .profile
-                            }
-                            Spacer()
-                            TabBarItem(iconName: "gearshape", label: "Settings", isSelected: selectedTab == .settings) {
-                                selectedTab = .settings
-                            }
-                            Spacer()
-                        }
-                        .frame(height: UIScreen.main.bounds.height * 0.09) // Responsive tab bar height
-                        .background(Color.white)
-                        .cornerRadius(UIScreen.main.bounds.width * 0.02) // Responsive corner radius
-                        .shadow(radius: UIScreen.main.bounds.width * 0.015) // Responsive shadow radius
-                        .padding(.bottom, UIScreen.main.bounds.height * 0.01)
-                    }
+                    
                     .edgesIgnoringSafeArea(.all)
                     
                     if selectedTab == .planTrip {

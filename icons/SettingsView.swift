@@ -230,38 +230,6 @@ struct SettingsView: View {
                             .padding(.horizontal, UIScreen.main.bounds.width * 0.05)
                         }
                     }
-
-
-                    // stopping point
-                   
-
-                    VStack {
-                        HStack {
-                            Spacer()
-                            TabBarItem(iconName: "briefcase", label: "Past Trips", isSelected: selectedTab == .pastTrips) {
-                                navigateTo(.pastTrips)
-                            }
-                            Spacer()
-                            TabBarItem(iconName: "globe", label: "Plan Trip", isSelected: selectedTab == .planTrip) {
-                                navigateTo(.planTrip)
-                            }
-                            Spacer()
-                            TabBarItem(iconName: "person.fill", label: "Profile", isSelected: selectedTab == .profile) {
-                                navigateTo(.profile)
-                            }
-                            Spacer()
-                            TabBarItem(iconName: "gearshape", label: "Settings", isSelected: selectedTab == .settings) {
-                                navigateTo(.settings)
-                            }
-                            Spacer()
-                        }
-                        .frame(height: UIScreen.main.bounds.height * 0.1) // Adjust the height based on screen height
-                        .background(Color.white)
-                        .cornerRadius(UIScreen.main.bounds.height * 0.02) // Adjust corner radius based on screen height
-                        .shadow(radius: UIScreen.main.bounds.height * 0.01)
-                    }
-                    .edgesIgnoringSafeArea(.bottom)
-                    .padding(.bottom, -UIScreen.main.bounds.height * 0.05)
                 }
                 .ignoresSafeArea(.keyboard, edges: .bottom)
                 .alert(isPresented: $showRemovePictureAlert) {

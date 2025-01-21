@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		13A9F2F42D3F726300D6C8D1 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A9F2F32D3F726300D6C8D1 /* MainView.swift */; };
 		B545CE73CFB789D6E39EA22B /* Pods_TripPlanner3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D99151A11AE8CBB7350A40 /* Pods_TripPlanner3.framework */; };
 		DB3A67872CB24ADA0092CE75 /* button.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3A67862CB24ADA0092CE75 /* button.swift */; };
 		DB3A678B2CB2749D0092CE75 /* DayActivities.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3A678A2CB2749D0092CE75 /* DayActivities.swift */; };
@@ -37,7 +38,6 @@
 		DBC8A0542C8D63B60034CA2D /* SplashController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC8A0532C8D63B60034CA2D /* SplashController.swift */; };
 		DBC8A0562C8D64FE0034CA2D /* IntroController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC8A0552C8D64FE0034CA2D /* IntroController.swift */; };
 		DBC8A0582C8E82F10034CA2D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB3D116E2C6199E60067E215 /* Assets.xcassets */; };
-		DBC8A05C2C955CF20034CA2D /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC8A05B2C955CF20034CA2D /* ProfileView.swift */; };
 		DBC8A05E2C9560920034CA2D /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC8A05D2C9560920034CA2D /* ImagePicker.swift */; };
 		DBC8A06A2C9622730034CA2D /* RoundedCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC8A0692C9622730034CA2D /* RoundedCorner.swift */; };
 		DBC8A0702C962E050034CA2D /* ProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC8A06F2C962E050034CA2D /* ProfileHeaderView.swift */; };
@@ -70,6 +70,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		13A9F2F32D3F726300D6C8D1 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		73D99151A11AE8CBB7350A40 /* Pods_TripPlanner3.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TripPlanner3.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7687867CE8263CFC0FC021CD /* Pods-TripPlanner3.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TripPlanner3.debug.xcconfig"; path = "Target Support Files/Pods-TripPlanner3/Pods-TripPlanner3.debug.xcconfig"; sourceTree = "<group>"; };
 		9FEFD8157563E618C22E404D /* Pods-TripPlanner3.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TripPlanner3.release.xcconfig"; path = "Target Support Files/Pods-TripPlanner3/Pods-TripPlanner3.release.xcconfig"; sourceTree = "<group>"; };
@@ -106,7 +107,6 @@
 		DBC8A0512C894BD80034CA2D /* SecondView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecondView.swift; sourceTree = "<group>"; };
 		DBC8A0532C8D63B60034CA2D /* SplashController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashController.swift; sourceTree = "<group>"; };
 		DBC8A0552C8D64FE0034CA2D /* IntroController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroController.swift; sourceTree = "<group>"; };
-		DBC8A05B2C955CF20034CA2D /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		DBC8A05D2C9560920034CA2D /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		DBC8A0692C9622730034CA2D /* RoundedCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCorner.swift; sourceTree = "<group>"; };
 		DBC8A06F2C962E050034CA2D /* ProfileHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderView.swift; sourceTree = "<group>"; };
@@ -247,6 +247,7 @@
 				DB3D11672C6199E50067E215 /* SceneDelegate.swift */,
 				DB3D116E2C6199E60067E215 /* Assets.xcassets */,
 				DB3D11702C6199E60067E215 /* LaunchScreen.storyboard */,
+				13A9F2F32D3F726300D6C8D1 /* MainView.swift */,
 				DB3D11AA2C644AFA0067E215 /* GoogleService-Info.plist */,
 			);
 			path = Supporting;
@@ -283,7 +284,6 @@
 			children = (
 				DBC8A0512C894BD80034CA2D /* SecondView.swift */,
 				DBC8A0712C962FFC0034CA2D /* SettingsView.swift */,
-				DBC8A05B2C955CF20034CA2D /* ProfileView.swift */,
 				DBC8A0752C966C770034CA2D /* PastTripsView.swift */,
 			);
 			path = icons;
@@ -471,6 +471,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DBC8A06A2C9622730034CA2D /* RoundedCorner.swift in Sources */,
+				13A9F2F42D3F726300D6C8D1 /* MainView.swift in Sources */,
 				DB3D119A2C6447930067E215 /* HomeController.swift in Sources */,
 				DB3D11B02C6451AE0067E215 /* RegiserUserRequest.swift in Sources */,
 				DBC8A0562C8D64FE0034CA2D /* IntroController.swift in Sources */,
@@ -492,7 +493,6 @@
 				DB3A678F2CB2934B0092CE75 /* PlanController.swift in Sources */,
 				DB3D119E2C6447C10067E215 /* RegisterController.swift in Sources */,
 				DBC8A0872C96B6AF0034CA2D /* ChangeEmailView.swift in Sources */,
-				DBC8A05C2C955CF20034CA2D /* ProfileView.swift in Sources */,
 				DB3D11982C6447790067E215 /* ForgotPasswordController.swift in Sources */,
 				DB3D11A32C64480E0067E215 /* CustomButton.swift in Sources */,
 				DBC8A0832C96975F0034CA2D /* DayActivityView.swift in Sources */,

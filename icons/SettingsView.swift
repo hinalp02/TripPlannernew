@@ -31,7 +31,6 @@ struct SettingsView: View {
     let textBoxBackgroundColor = Color(UIColor(white: 1, alpha: 0.85))
 
     var body: some View {
-        NavigationView {
             ZStack {
                 Color.white.edgesIgnoringSafeArea(.all)
                
@@ -258,7 +257,7 @@ struct SettingsView: View {
                 ImagePicker(selectedImage: $profileImage)
             }
             .onAppear(perform: loadUserData)
-        }
+        
     }
 
     private func initials(for name: String) -> String {

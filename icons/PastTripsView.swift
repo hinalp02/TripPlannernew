@@ -326,7 +326,7 @@ struct PastTripsView: View {
     let gradientStartColor = Color(UIColor(red: 141/255, green: 172/255, blue: 225/255, alpha: 1))
     let gradientEndColor = Color(UIColor(red: 41/255, green: 102/255, blue: 117/255, alpha: 1))
 
-    @State private var selectedTab: Tab = .pastTrips
+    @EnvironmentObject var appState: AppState
     @State private var pastTrips: [String] = []
     @State private var profileImage: UIImage? = nil
     var userUID: String
@@ -335,7 +335,6 @@ struct PastTripsView: View {
     @State private var trendingImageName: String = "santorini"  // Default image
     
     @State private var expandedTrips: [String: Bool] = [:] // Track expanded state by trip
-
 
     // Define a responsive height based on screen height
     let buttonHeight: CGFloat = UIScreen.main.bounds.height * 0.1 // 10% of screen height
@@ -356,10 +355,9 @@ struct PastTripsView: View {
     ]
 
     var body: some View {
-            NavigationView {
-                ZStack {
-                    Color.white.edgesIgnoringSafeArea(.all)
-                    ScrollView {
+            ZStack {
+                Color.white.edgesIgnoringSafeArea(.all)
+                ScrollView {
                     VStack(spacing: 0) {
                         VStack(spacing: UIScreen.main.bounds.height * 0.012) {
                             HStack {
@@ -427,7 +425,7 @@ struct PastTripsView: View {
                             
                             // "Plan Your Next Trip" button
                             Button(action: {
-                                selectedTab = .planTrip
+                                appState.selectedTab = .planTrip
                             }) {
                                 Text("Plan Your Next Trip!")
                                     .font(.headline)
@@ -439,7 +437,7 @@ struct PastTripsView: View {
                                         startPoint: .leading,
                                         endPoint: .trailing)
                                     )
-                                    .cornerRadius(UIScreen.main.bounds.width * 0.025) // 10 points as ~2.5% of screen width
+                                    .cornerRadius(UIScreen.main.bounds.width * 0.025)
                                     .shadow(radius: UIScreen.main.bounds.width * 0.013)
                             }
                             .padding(.horizontal, UIScreen.main.bounds.width * 0.08) // 30 points as ~8% of screen width
@@ -461,7 +459,6 @@ struct PastTripsView: View {
                                 .foregroundColor(.gray)
                             
                             // ScrollView for past trips
-                            //ScrollView {
                             VStack(spacing: UIScreen.main.bounds.height * 0.012) {
                                 // Filter valid trips before passing them to ForEach
                                 ForEach(pastTrips.filter { trip in
@@ -496,9 +493,7 @@ struct PastTripsView: View {
                                                         .fontWeight(.bold)
                                                         .foregroundColor(.white)
 
-                                                    //Text("\(days) days")
                                                     Text("\(days) \(days == 1 ? "day" : "days")")
-                                                        //.font(.subheadline)
                                                         .font(.body)
                                                         .fontWeight(.semibold)
                                                         .foregroundColor(.white)
@@ -525,34 +520,26 @@ struct PastTripsView: View {
                                         .padding(.top, UIScreen.main.bounds.height * 0.005)
                                     }
                                 }
-                            }}
-                            
-                            .frame(maxHeight: .infinity) // Ensure ScrollView takes full available space
-                            .padding()
-                            .background(Color.white)
-                            .cornerRadius(UIScreen.main.bounds.width * 0.06) // Responsive corner radius (6% of screen width)
-                            .padding(.top, UIScreen.main.bounds.height * -0.06) // Responsive top padding for overlap effect
-                            .padding(.bottom, UIScreen.main.bounds.height * 0.06)
+                            }
                         }
-                        Spacer()
+                        .frame(maxHeight: .infinity) // Ensure ScrollView takes full available space
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(UIScreen.main.bounds.width * 0.06) // Responsive corner radius (6% of screen width)
+                        .padding(.top, UIScreen.main.bounds.height * -0.06) // Responsive top padding for overlap effect
+                        .padding(.bottom, UIScreen.main.bounds.height * 0.06)
                     }
-                    
-                    
-                    .edgesIgnoringSafeArea(.all)
-                    
-                    if selectedTab == .planTrip {
-                        SecondView(userUID: userUID)
-                    } else if selectedTab == .settings {
-                        SettingsView(userUID: userUID)
-                    }
+                    Spacer()
                 }
+                .edgesIgnoringSafeArea(.all)
                 .onAppear {
                     loadUserProfile()
                     loadPastTrips()
                     selectRandomTrendingCity()  // Select a random city on appear
                 }
             }
-        } // done responsiveness till here
+        
+    }
 
     private func formattedDate() -> String {
         let dateFormatter = DateFormatter()
@@ -595,25 +582,6 @@ struct PastTripsView: View {
         trendingImageName = randomCity.1
     }
 
-    private func TabBarItem(iconName: String, label: String, isSelected: Bool = false, action: @escaping () -> Void) -> some View {
-        VStack {
-            Image(systemName: iconName)
-                .foregroundColor(isSelected ? .blue : .blue)
-                .frame(width: UIScreen.main.bounds.width * 0.1, height: UIScreen.main.bounds.height * 0.05) // Responsive icon size
-            Text(label)
-                .font(.footnote)
-                .foregroundColor(isSelected ? .blue : .blue)
-                .padding(.top, UIScreen.main.bounds.height * 0.005) // Responsive padding
-        }
-        .padding(.vertical, UIScreen.main.bounds.height * 0.01) // Responsive vertical padding
-        .padding(.horizontal, UIScreen.main.bounds.width * 0.02) // Responsive horizontal padding
-        .background(isSelected ? Color.blue.opacity(0.2) : Color.clear)
-        .cornerRadius(UIScreen.main.bounds.width * 0.025) // Responsive corner radius
-        .onTapGesture {
-            action()
-        }
-    }
-
     private func initials(for name: String) -> String {
         let components = name.split(separator: " ")
         let initials = components.compactMap { $0.first }.map { String($0) }.joined()
@@ -625,7 +593,16 @@ struct PastTripsView: View {
 enum Tab {
     case pastTrips
     case planTrip
-    case profile
     case settings
+}
+func changeTab(index: Int) {
+    if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+       let window = scene.windows.first,
+       let tabBar = window.rootViewController as? UITabBarController {
+        tabBar.selectedIndex = index
+    }
+}
+class AppState: ObservableObject {
+    @Published var selectedTab: Tab = .pastTrips
 }
 

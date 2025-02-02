@@ -1,34 +1,69 @@
+////
+////  MainView.swift
+////  TripPlanner3
+////
+////  Created by Sruthi Padisetty on 1/20/25.
+////
 //
-//  MainView.swift
-//  TripPlanner3
+//import SwiftUI
 //
-//  Created by Sruthi Padisetty on 1/20/25.
+//struct MainView: View {
+//    var userUID: String
+//
+//    var body: some View {
+//        TabView {
+//            PastTripsView(userUID: userUID)
+//                .tabItem {
+//                    Label("Past Trips", systemImage: "briefcase")
+//                }
+//            SecondView(userUID: userUID)
+//                .tabItem {
+//                    Label("Plan Trip", systemImage: "globe")
+//                }
+//            SettingsView(userUID: userUID)
+//                .tabItem {
+//                    Label("Settings", systemImage: "gear")
+//                }
+//        }
+//    }
+//}
+//
+//#Preview {
+//    MainView(userUID: "exampleUID")
+//}
+//
 //
 
 import SwiftUI
 
 struct MainView: View {
+    @StateObject var appState = AppState()
     var userUID: String
 
     var body: some View {
-        TabView {
+        TabView(selection: $appState.selectedTab) {
             PastTripsView(userUID: userUID)
                 .tabItem {
                     Label("Past Trips", systemImage: "briefcase")
                 }
+                .tag(Tab.pastTrips)
+            
             SecondView(userUID: userUID)
                 .tabItem {
                     Label("Plan Trip", systemImage: "globe")
                 }
+                .tag(Tab.planTrip)
+            
             SettingsView(userUID: userUID)
                 .tabItem {
                     Label("Settings", systemImage: "gear")
                 }
+                .tag(Tab.settings)
         }
+        .environmentObject(appState)
     }
 }
 
 #Preview {
     MainView(userUID: "exampleUID")
 }
-

@@ -118,6 +118,7 @@ struct ItineraryView: View {
             }
 
     }
+    
 
     private func loadDataIfNeeded() {
         if planController.locationActivitiesByDay.isEmpty && !planController.hasGeneratedActivities {
@@ -152,4 +153,6 @@ struct ItineraryView: View {
         }
     }
 }
+
+
 

@@ -227,6 +227,7 @@
 			children = (
 				DBC8A0732C966B510034CA2D /* ChangePasswordView.swift */,
 				DB3D11972C6447790067E215 /* ForgotPasswordController.swift */,
+				DBC8A0692C9622730034CA2D /* RoundedCorner.swift */,
 				DB3D11992C6447930067E215 /* HomeController.swift */,
 				DB3D119B2C6447AA0067E215 /* LoginController.swift */,
 				DB3D119D2C6447C10067E215 /* RegisterController.swift */,
@@ -274,7 +275,6 @@
 				DB3D11AF2C6451AE0067E215 /* RegiserUserRequest.swift */,
 				DB3D11B12C6451CA0067E215 /* LoginUserRequest.swift */,
 				DB3D11B52C645AAD0067E215 /*  User.swift */,
-				DBC8A0692C9622730034CA2D /* RoundedCorner.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";

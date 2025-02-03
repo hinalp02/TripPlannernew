@@ -12,7 +12,6 @@ struct SettingsView: View {
     @State private var loading: Bool = true
     @State private var showRemovePictureAlert = false
     @State private var isPictureHighlighted = false
-    @State private var selectedTab: Tab = .settings
     @FocusState private var isNameFocused: Bool
     @State private var selectedButton: String? = nil
     @State private var isEditProfilePressed = false
@@ -31,6 +30,7 @@ struct SettingsView: View {
     let textBoxBackgroundColor = Color(UIColor(white: 1, alpha: 0.85))
 
     var body: some View {
+        NavigationView {
             ZStack {
                 Color.white.edgesIgnoringSafeArea(.all)
                
@@ -56,11 +56,11 @@ struct SettingsView: View {
                                 HStack {
                                     TextField("Name", text: $username)
                                         .font(.system(size: UIScreen.main.bounds.width * 0.045))
-                                        .padding(.horizontal, UIScreen.main.bounds.width * 0.04) // Adjust horizontal padding
-                                        .padding(.vertical, UIScreen.main.bounds.height * 0.015) // Adjust vertical padding
+                                        .padding(.horizontal, UIScreen.main.bounds.width * 0.04)
+                                        .padding(.vertical, UIScreen.main.bounds.height * 0.01)
                                         .foregroundColor(.black)
                                         .background(Color(UIColor(red: 230/255, green: 240/255, blue: 250/255, alpha: 1)))
-                                        .cornerRadius(UIScreen.main.bounds.width * 0.02) // Dynamic corner radius
+                                        .cornerRadius(UIScreen.main.bounds.width * 0.02)
                                         .focused($isNameFieldFocused)
                                         .onAppear {
                                             isNameFieldFocused = true
@@ -73,7 +73,7 @@ struct SettingsView: View {
                                         .focused($isNameFocused)
                                     Image(systemName: "pencil.circle.fill")
                                         .foregroundColor(.gray)
-                                        .font(.system(size: UIScreen.main.bounds.width * 0.05)) // Adjust icon size
+                                        .font(.system(size: UIScreen.main.bounds.width * 0.05))
                                         .padding(.trailing, UIScreen.main.bounds.width * 0.03)
                                         .onTapGesture {
                                             isNameFocused = true
@@ -87,13 +87,13 @@ struct SettingsView: View {
                                 .padding(.bottom, UIScreen.main.bounds.height * 0.02)
                             } else {
                                 Text(username.isEmpty ? "Guest" : username)
-                                    .font(.system(size: UIScreen.main.bounds.width * 0.07, weight: .bold)) // Adjust font size
+                                    .font(.system(size: UIScreen.main.bounds.width * 0.07, weight: .bold))
                                     .foregroundColor(.white)
-                                    .padding(.top, UIScreen.main.bounds.height * 0.01) // Adjust top padding
                                     .onTapGesture {
                                         isEditing = true
                                         isNameFieldFocused = true
                                     }
+                                    .padding(.top, -UIScreen.main.bounds.height * 0.04)
                             }
 
                             ZStack {
@@ -102,22 +102,23 @@ struct SettingsView: View {
                                         .resizable()
                                         .aspectRatio(contentMode: .fill)
                                         .frame(width: UIScreen.main.bounds.width * 0.25,
-                                               height: UIScreen.main.bounds.width * 0.25) // Responsive size
+                                               height: UIScreen.main.bounds.width * 0.25)
                                         .clipShape(Circle())
-                                        .overlay(Circle().stroke(isPictureHighlighted ? Color(red: 96/255, green: 131/255, blue: 153/255) : Color.white, lineWidth: UIScreen.main.bounds.width * 0.008)) // Responsive stroke
+                                        .overlay(Circle().stroke(isPictureHighlighted ? Color(red: 96/255, green: 131/255, blue: 153/255) : Color.white, lineWidth: UIScreen.main.bounds.width * 0.008))
                                         .onTapGesture {
                                             isPictureHighlighted.toggle()
                                             showingImagePicker = true
                                         }
                                         .offset(y: isEditing ? -UIScreen.main.bounds.height * 0.02 : 0)
+                                        .padding(.top, UIScreen.main.bounds.height * 0.0005)
                                    
                                     if isEditing {
                                         Image(systemName: "pencil.circle.fill")
                                             .foregroundColor(.white)
-                                            .font(.system(size: UIScreen.main.bounds.width * 0.07)) // Responsive size
+                                            .font(.system(size: UIScreen.main.bounds.width * 0.07))
                                             .background(Circle().fill(Color.black.opacity(0.6)))
                                             .offset(x: UIScreen.main.bounds.width * 0.1,
-                                                    y: UIScreen.main.bounds.width * 0.1) // Responsive offset
+                                                    y: UIScreen.main.bounds.width * 0.1)
                                             .onTapGesture {
                                                 showingImagePicker = true
                                             }
@@ -153,16 +154,12 @@ struct SettingsView: View {
                                     profileImage = nil
                                 }) {
                                     Text("Remove Profile Picture")
-                                       .font(.system(size: UIScreen.main.bounds.width * 0.035))
-                                       .padding(.horizontal, UIScreen.main.bounds.width * 0.03)
-                                       .padding(.vertical, UIScreen.main.bounds.width * 0.015)
-                                       .background(Color(red: 96/255, green: 131/255, blue: 153/255))
-                                       .foregroundColor(.white)
-                                       .cornerRadius(UIScreen.main.bounds.width * 0.02)
-                                       .shadow(radius: UIScreen.main.bounds.width * 0.01)
                                 }
-                                .padding(.vertical, UIScreen.main.bounds.width * 0.04)
+                                .buttonStyle(PressableButtonStyle())
+                                .padding(.top, UIScreen.main.bounds.height * 0.1)
+                                .padding(.bottom, UIScreen.main.bounds.height * 0.01)
                             }
+
                         }
                         .offset(y: -10)
                     }
@@ -174,13 +171,12 @@ struct SettingsView: View {
                                     Text("Save Changes")
                                 }
                                 .buttonStyle(PressableButtonStyle())
-                                .padding(.bottom, UIScreen.main.bounds.width * 0.075) // Additional space below Save Changes button
                                 .onLongPressGesture(minimumDuration: 0.1, pressing: { isPressing in
                                     isSaveChangesPressed = isPressing
                                 }) {
                                     saveProfileChanges()
                                 }
-                                .padding(UIScreen.main.bounds.width * 0.05)
+                                .padding(.horizontal, UIScreen.main.bounds.width * 0.05)
                                 .onTapGesture {
                                     isEditing = false
                                     isNameFocused = true
@@ -257,7 +253,7 @@ struct SettingsView: View {
                 ImagePicker(selectedImage: $profileImage)
             }
             .onAppear(perform: loadUserData)
-        
+        }
     }
 
     private func initials(for name: String) -> String {
@@ -375,48 +371,6 @@ struct SettingsView: View {
             }
         }.resume()
     }
-
-    private func navigateTo(_ tab: Tab) {
-        if let window = UIApplication.shared.windows.first {
-            switch tab {
-            case .pastTrips:
-                window.rootViewController = UIHostingController(rootView: PastTripsView(userUID: userUID))
-            case .planTrip:
-                window.rootViewController = UIHostingController(rootView: SecondView(userUID: userUID))
-            case .profile:
-                window.rootViewController = UIHostingController(rootView: SettingsView(userUID: userUID))
-            case .settings:
-                window.rootViewController = UIHostingController(rootView: SettingsView(userUID: userUID))
-            }
-            window.makeKeyAndVisible()
-        }
-    }
-
-    private func TabBarItem(iconName: String, label: String, isSelected: Bool = false, action: @escaping () -> Void) -> some View {
-        VStack {
-            Image(systemName: iconName)
-                .foregroundColor(isSelected ? gradientEndColor : .blue)
-            Text(label)
-                .font(.footnote)
-                .foregroundColor(isSelected ? gradientEndColor : .blue)
-        }
-        .padding(.vertical, UIScreen.main.bounds.height * 0.02) // Adjusted padding based on screen height
-        .background(isSelected ? gradientEndColor.opacity(0.2) : Color.clear)
-        .cornerRadius(UIScreen.main.bounds.height * 0.01) // Adjusted corner radius based on screen height
-        .onTapGesture {
-            action()
-            self.selectedTab = Tab(rawValue: label) ?? .settings
-        }
-    }
-}
-
-extension SettingsView {
-    enum Tab: String {
-        case pastTrips = "Past Trips"
-        case planTrip = "Plan Trip"
-        case profile = "Profile"
-        case settings = "Settings"
-    }
 }
 
 struct CustomButtonStyle: ViewModifier {
@@ -426,7 +380,7 @@ struct CustomButtonStyle: ViewModifier {
         content
             .font(.headline)
             .padding()
-            .frame(width: UIScreen.main.bounds.width * 0.8, height: 50)
+            .frame(width: UIScreen.main.bounds.width * 0.8,  height: UIScreen.main.bounds.height * 0.06)
             .background(isSelected ? Color.teal.opacity(0.3) : Color.teal)
             .foregroundColor(isSelected ? .black : .white)
             .cornerRadius(UIScreen.main.bounds.height * 0.02)
@@ -438,10 +392,9 @@ struct PressableButtonStyle: ButtonStyle {
         configuration.label
             .font(.headline)
             .padding()
-            .frame(width: UIScreen.main.bounds.width * 0.8, height: UIScreen.main.bounds.height * 0.07)
+            .frame(width: UIScreen.main.bounds.width * 0.8, height: UIScreen.main.bounds.height * 0.06)
             .background(configuration.isPressed ? Color(red: 96/255, green: 131/255, blue: 153/255) : Color(red: 200/255, green: 228/255, blue: 250/255))
             .foregroundColor(configuration.isPressed ? .white : .black)
             .cornerRadius(UIScreen.main.bounds.height * 0.02)
     }
 }
-

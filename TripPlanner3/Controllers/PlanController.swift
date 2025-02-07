@@ -183,9 +183,11 @@ class PlanController: ObservableObject {
    // function to save the planned trip for a specific user
    func saveTrip(userUID: String, location: String, days: Int, types: Set<String>) {
        var pastTrips = getPastTrips(userUID: userUID)
-       let typesString = types.joined(separator: ", ")
+       let sortedTypes = types.sorted()
+       let typesString = sortedTypes.joined(separator: ", ")
        let trip = "Trip to \(location) - \(days) days (\(typesString))"
        //pastTrips.insert(trip, at: 0)
+       print(trip)
        
        // Check if the trip already exists in the list
        if !pastTrips.contains(trip) {
@@ -256,3 +258,5 @@ struct LocationActivities: Identifiable {
    var address: String  // address of the location
    var imageUrl: String?  // optional URL for the image of the location
 }
+
+

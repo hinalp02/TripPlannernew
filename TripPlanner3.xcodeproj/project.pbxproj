@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		13A9F2F42D3F726300D6C8D1 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A9F2F32D3F726300D6C8D1 /* MainView.swift */; };
+		61F523142D52CE0500B1832B /* NavigationBarExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F523132D52CE0100B1832B /* NavigationBarExtensions.swift */; };
 		B545CE73CFB789D6E39EA22B /* Pods_TripPlanner3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D99151A11AE8CBB7350A40 /* Pods_TripPlanner3.framework */; };
 		DB3A67872CB24ADA0092CE75 /* button.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3A67862CB24ADA0092CE75 /* button.swift */; };
 		DB3A678B2CB2749D0092CE75 /* DayActivities.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3A678A2CB2749D0092CE75 /* DayActivities.swift */; };
@@ -71,6 +72,7 @@
 
 /* Begin PBXFileReference section */
 		13A9F2F32D3F726300D6C8D1 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		61F523132D52CE0100B1832B /* NavigationBarExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarExtensions.swift; sourceTree = "<group>"; };
 		73D99151A11AE8CBB7350A40 /* Pods_TripPlanner3.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TripPlanner3.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7687867CE8263CFC0FC021CD /* Pods-TripPlanner3.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TripPlanner3.debug.xcconfig"; path = "Target Support Files/Pods-TripPlanner3/Pods-TripPlanner3.debug.xcconfig"; sourceTree = "<group>"; };
 		9FEFD8157563E618C22E404D /* Pods-TripPlanner3.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TripPlanner3.release.xcconfig"; path = "Target Support Files/Pods-TripPlanner3/Pods-TripPlanner3.release.xcconfig"; sourceTree = "<group>"; };
@@ -257,6 +259,7 @@
 		DB3D119F2C6447E40067E215 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				61F523132D52CE0100B1832B /* NavigationBarExtensions.swift */,
 				DB3D11A02C6447F80067E215 /* AuthHeaderView.swift */,
 				DB3D11A22C64480E0067E215 /* CustomButton.swift */,
 				DB3D11A42C6448270067E215 /* CustomTextField.swift */,
@@ -487,6 +490,7 @@
 				DB3A678D2CB279C30092CE75 /* iteneraryModels.swift in Sources */,
 				DB3D11AD2C64515F0067E215 /* AuthService.swift in Sources */,
 				DBC8A0702C962E050034CA2D /* ProfileHeaderView.swift in Sources */,
+				61F523142D52CE0500B1832B /* NavigationBarExtensions.swift in Sources */,
 				DBC8A0812C9697370034CA2D /* PlanView.swift in Sources */,
 				DBC8A0542C8D63B60034CA2D /* SplashController.swift in Sources */,
 				DB3D11B42C645A610067E215 /* Validator.swift in Sources */,

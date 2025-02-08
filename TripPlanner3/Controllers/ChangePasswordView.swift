@@ -77,6 +77,37 @@ struct ChangePasswordView: View {
             }
             .padding(.top)
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                let appearance = UINavigationBarAppearance()
+                   appearance.configureWithTransparentBackground() // Makes the bar fully transparent
+                   appearance.backgroundColor = .systemGroupedBackground // Ensure it blends with your screen
+                   appearance.shadowColor = .clear // Removes any shadow (black line)
+                   
+                appearance.titleTextAttributes = [.foregroundColor: UIColor.black]
+                appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
+
+                UINavigationBar.appearance().standardAppearance = appearance
+                UINavigationBar.appearance().scrollEdgeAppearance = appearance
+                UINavigationBar.appearance().compactAppearance = appearance
+                UINavigationBar.appearance().tintColor = .black
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    UINavigationBar.appearance().tintColor = .black
+                }
+            }
+            .onDisappear {
+                // Reset back button color to default for other views
+                let appearance = UINavigationBarAppearance()
+                appearance.configureWithOpaqueBackground()
+                appearance.backgroundColor = .clear
+                appearance.titleTextAttributes = [.foregroundColor: UIColor.white] // Restore default white
+                appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+
+                UINavigationBar.appearance().standardAppearance = appearance
+                UINavigationBar.appearance().scrollEdgeAppearance = appearance
+                UINavigationBar.appearance().compactAppearance = appearance
+                UINavigationBar.appearance().tintColor = .white // **Reset back button to white**
+            }
         }
     }
 

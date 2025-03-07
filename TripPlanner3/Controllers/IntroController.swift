@@ -12,7 +12,7 @@ class IntroController: UIViewController {
     var onTapCompletion: (() -> Void)?
     
     private var textOptions: [NSAttributedString] = [
-        NSAttributedString(string: "Ever wanted to go on vacation without the hassle of planning out your trip?",
+        NSAttributedString(string: "Have you ever wanted to go on vacation without the hassle of planning out your trip?",
                            attributes: [.foregroundColor: UIColor.systemTeal, .font: UIFont.boldSystemFont(ofSize: 20)]),
         
         {
@@ -60,7 +60,7 @@ class IntroController: UIViewController {
     
     private let textLabel: UILabel = {  // Label inside the text box
         let label = UILabel()
-        label.text = "Ever wanted to go on vacation without the hassle of planning out your trip?"
+        label.text = "Have you ever wanted to go on vacation without the hassle of planning out your trip?"
         label.textAlignment = .center
         label.baselineAdjustment = .alignCenters
         label.numberOfLines = 0
@@ -143,7 +143,7 @@ class IntroController: UIViewController {
             textLabel.trailingAnchor.constraint(equalTo: textBoxView.trailingAnchor, constant: -25),
             
             // Arrow Button (Positioned lower)
-            arrowButton.bottomAnchor.constraint(equalTo: textBoxView.bottomAnchor, constant: 25), 
+            arrowButton.bottomAnchor.constraint(equalTo: textBoxView.bottomAnchor, constant: 25),
             arrowButton.centerXAnchor.constraint(equalTo: textBoxView.centerXAnchor),
             arrowButton.widthAnchor.constraint(equalToConstant: 50),
             arrowButton.heightAnchor.constraint(equalToConstant: 50)

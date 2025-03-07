@@ -13,16 +13,77 @@ import OpenAI
 // this class is repsonsible for handling user input, querying the API,
 // parsing the responses, and fetching relevant images for each location
 class PlanController: ObservableObject {
-   @Published var messages: [Message] = []  // array of messages exchanged with the API
-   @Published var locationActivities: [LocationActivities] = []  // Activities for each location
-   @Published var locationActivitiesByDay: [DayActivities] = []  // activities for each day
-   @Published var hasGeneratedActivities: Bool = false  // flag that tracks if activities have been generated
-   @Published var apiError: String? = nil // store any API errors for the UI to show
-   @Published var isLoading: Bool = false
-   
-   
-   // new API key temp
-    private let openAI = OpenAI(apiToken: "temp")
+    @Published var messages: [Message] = []  // array of messages exchanged with the API
+    @Published var locationActivities: [LocationActivities] = []  // Activities for each location
+    @Published var locationActivitiesByDay: [DayActivities] = []  // activities for each day
+    @Published var hasGeneratedActivities: Bool = false  // flag that tracks if activities have been generated
+    @Published var apiError: String? = nil // store any API errors for the UI to show
+    @Published var isLoading: Bool = false
+    
+    
+
+    private var primaryApiKey = "temp"
+    private var backupApiKey = "temp2"
+    private var usingBackupKey = false  // Flag to track if we're using the backup
+    
+    // Initialize OpenAI with the primary key
+    private var openAI: OpenAI
+    
+    init() {
+        openAI = OpenAI(apiToken: primaryApiKey)
+    }
+    
+    func switchToBackupKey() {
+        if !usingBackupKey {
+            usingBackupKey = true
+            openAI = OpenAI(apiToken: backupApiKey)
+            print("⚠️ Switched to backup API key: \(backupApiKey)")
+        }
+    }
+    
+
+    func resetBeforeNewSearch() {
+            locationActivitiesByDay = []  // Clear all previous activities
+            hasGeneratedActivities = false  // Mark that activities are not generated yet
+            isLoading = true  // Set loading to true for the new fetch
+        }
+    
+    
+    func getApiReply(for queryMessage: String, userUID: String, location: String, days: Int, type: String) {
+        let query = ChatQuery(
+            messages: [.init(role: .user, content: queryMessage)!],
+            //model: .gpt3_5Turbo
+            model: .gpt4_o
+            // model: .gpt4
+            
+        )
+        
+        openAI.chats(query: query) { result in
+            switch result {
+            case .success(let success):
+                guard let choice = success.choices.first else { return }
+                guard let message = choice.message.content?.string else { return }
+                
+                DispatchQueue.main.async {
+                    self.messages.append(Message(content: message, isUser: false))
+                    self.parseApiReply(message, userUID: userUID, location: location, days: days, type: type)
+                    self.isLoading = false
+                }
+                
+            case .failure(let failure):
+                DispatchQueue.main.async {
+                    if !self.usingBackupKey {
+                        print("❌ API call failed with primary key. Attempting backup...")
+                        self.switchToBackupKey()
+                        self.getApiReply(for: queryMessage, userUID: userUID, location: location, days: days, type: type)
+                    } else {
+                        self.apiError = "Failed to retrieve trip details: \(failure.localizedDescription)"
+                        self.isLoading = false
+                    }
+                }
+            }
+        }
+    }
 
 
    // unique key for saving past trips
@@ -31,11 +92,6 @@ class PlanController: ObservableObject {
    // use the shared instance of ImageController
    private let imageController = ImageController.shared
    
-    func resetBeforeNewSearch() {
-        locationActivitiesByDay = []  // Clear all previous activities
-        hasGeneratedActivities = false  // Mark that activities are not generated yet
-        isLoading = true  // Set loading to true for the new fetch
-    }
    
    // sends a new message to the API to generate the trips details from user input from SecondView
    func sendNewMessage(userUID: String, location: String, filter: String, days: Int) {
@@ -45,12 +101,12 @@ class PlanController: ObservableObject {
        
        // query to send to the API
        let queryMessage = """
-       Plan a \(days)-day \(filter) trip in \(location). Each day should include several activity locations that are close to each other. Provide the location's name, a detailed description of what the traveler will do at that location, and the location's address. The address can't be in the description. Include useful tips and fun facts. For longer activities, include fewer activity locations for that day. Provide a very descriptive summary of the day's plan at the start in the same order as the locations are listed for each day. Respond in the following JSON format:
+       Plan a \(days)-day \(filter) trip in \(location). Each day should include several activity locations that are close to each other. Provide the location's name, a detailed description of what the traveler will do at that location, and the location's address. The address can't be in the description. Include useful tips and fun facts. For longer activities, include fewer activity locations for that day. Provide a very descriptive summary of the day's plan at the start in the same order as the locations are listed for each day. Give a short concise response in order of starting activity to ending activity. Respond in the following JSON format:
        {
          "days": [
            {
              "day": 1,
-             "summary": "A very descriptive summary of the day's activities.",
+             "summary": "A concise summary of the day's activities.",
              "locations": [
                {
                  "location": "Location Name 1",
@@ -76,52 +132,30 @@ class PlanController: ObservableObject {
        getApiReply(for: queryMessage, userUID: userUID, location: location, days: days, type: filter)
    }
 
+    
    
-   
-   // request a gpt search result
-   func getApiReply(for queryMessage: String, userUID: String, location: String, days: Int, type: String) {
-       // create a ChatQuery object with the user message and the model to use
-       let query = ChatQuery(
-           messages: [.init(role: .user, content: queryMessage)!],
-           model: .gpt3_5Turbo
-           )
-       
-       // send the query to the api
-       openAI.chats(query: query) { result in
-           switch result {
-           case .success(let success):
-               // ensure there's at least one choice in the response
-               guard let choice = success.choices.first else { return }
-               // extract the content of the message
-               guard let message = choice.message.content?.string else { return }
-               
-               // use the main thread to update the UI
-               DispatchQueue.main.async {
-                   // append the api response to the messages array
-                   self.messages.append(Message(content: message, isUser: false))
-                   // parse the API response
-                   self.parseApiReply(message, userUID: userUID, location: location, days: days, type: type)
-                   self.isLoading = false
-               }
-           // in case of failure, print out the error
-           case .failure(let failure):
-               DispatchQueue.main.async {
-                   self.apiError = "Failed to retrieve trip details: \(failure.localizedDescription)"
-                   self.isLoading = false
-               }
-           }
-       }
-   }
    
    // parses the API's response and updates the activities for the location
-   func parseApiReply(_ reply: String, userUID: String, location: String, days: Int, type: String) {
+   func parseApiReply(_ unParsed: String, userUID: String, location: String, days: Int, type: String) {
+       
+       var reply = unParsed.trimmingCharacters(in: .whitespacesAndNewlines)
+       
+      
+       reply = String(reply.dropFirst(7))
+      
+       reply = String(reply.dropLast(3))
+       
+       
+       reply = reply.trimmingCharacters(in: .whitespacesAndNewlines)
        // converting the API's reply string to data for JSON decoding
        guard let data = reply.data(using: .utf8) else {
            return
        }
        do {
+           print(reply)
            // decode the JSON into a LocationResponse object
            let jsonResponse = try JSONDecoder().decode(LocationResponse.self, from: data)
+           
            // manages asynchronous image loading
            let group = DispatchGroup()
            
@@ -181,38 +215,43 @@ class PlanController: ObservableObject {
    }
    
    // function to save the planned trip for a specific user
-   func saveTrip(userUID: String, location: String, days: Int, types: Set<String>) {
-       var pastTrips = getPastTrips(userUID: userUID)
-       let sortedTypes = types.sorted()
-       let typesString = sortedTypes.joined(separator: ", ")
-       let trip = "Trip to \(location) - \(days) days (\(typesString))"
-       //pastTrips.insert(trip, at: 0)
-       print(trip)
-       
-       // Check if the trip already exists in the list
-       if !pastTrips.contains(trip) {
-           pastTrips.insert(trip, at: 0) // Insert the new trip at the top
-       }
-       
-       // limit to 5 trips
-       if pastTrips.count > 5 {
-           pastTrips = Array(pastTrips.prefix(5))
-       }
-       // Save back to UserDefaults using a key specific to the user
-       UserDefaults.standard.set(pastTrips, forKey: "\(pastTripsKey)\(userUID)")
-   }
+    func saveTrip(userUID: String, location: String, days: Int, types: Set<String>) {
+        // 🚫 Prevent storing incomplete trips
+        guard hasGeneratedActivities, !location.isEmpty, !locationActivitiesByDay.isEmpty else {
+            print("🚫 Skipping trip save: Loading not complete")
+            return
+        }
+
+        var pastTrips = getPastTrips(userUID: userUID)
+        let sortedTypes = types.sorted()
+        let typesString = sortedTypes.joined(separator: ", ")
+        let trip = "Trip to \(location) - \(days) days (\(typesString))"
+
+        print(trip)
+
+        // ✅ Check if the trip is already stored
+        if !pastTrips.contains(trip) {
+            pastTrips.insert(trip, at: 0) // Insert at the top
+        }
+
+        // ✅ Keep only the last 10 trips
+        if pastTrips.count > 10 {
+            pastTrips = Array(pastTrips.prefix(10))
+        }
+
+        UserDefaults.standard.set(pastTrips, forKey: "\(pastTripsKey)\(userUID)")
+    }
+
 
    // Function to retrieve past trips for a specific user
    func getPastTrips(userUID: String) -> [String] {
        return UserDefaults.standard.stringArray(forKey: "\(pastTripsKey)\(userUID)") ?? []
    }
+    
+
+
 }
 
-/* How String -> Data conversion works
-  The 'reply' string is converted to 'Data'.
-  The 'data'in Data type is decoded into a 'LocationsResponse' object.
-  The 'locations' array from 'LocationsResponse' is mapped to a temp array of 'LocationActivities', which is then assigned to self.locationActivities for use in the SwiftUI view.
-*/
 
 
 // struct to represent the decoded JSON response for the location activities
@@ -258,5 +297,8 @@ struct LocationActivities: Identifiable {
    var address: String  // address of the location
    var imageUrl: String?  // optional URL for the image of the location
 }
+
+
+
 
 

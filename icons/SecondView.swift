@@ -15,7 +15,56 @@ struct SecondView: View {
     @State private var showAlert: Bool = false // Manage alert state
 
     let daysOptions = [1, 2, 3, 4, 5, 6, 7, 8]
-    let cities = ["Abuja, Nigeria", "Accra, Ghana", "Addis Ababa, Ethiopia", "Amsterdam, Netherlands", "Asunción, Paraguay", "Athens, Greece", "Auckland, New Zealand", "Austin, USA", "Bali, Indonesia", "Bangkok, Thailand", "Banjul, Gambia", "Barcelona, Spain", "Beijing, China", "Belgrade, Serbia", "Bendigo, Australia", "Berlin, Germany", "Bogota, Colombia", "Boston, USA", "Brisbane, Australia", "Buenos Aires, Argentina", "Budapest, Hungary", "Cairo, Egypt", "Calgary, Canada", "Cancun, Mexico", "Canberra, Australia", "Cape Town, South Africa", "Cartagena, Colombia", "Casablanca, Morocco", "Chennai, India", "Chicago, USA", "Colombo, Sri Lanka", "Copenhagen, Denmark", "Curitiba, Brazil", "Cusco, Peru", "Dakar, Senegal", "Delhi, India", "Dubai, UAE", "Dublin, Ireland", "Dunedin, New Zealand", "Durban, South Africa", "Edinburgh, Scotland", "Florence, Italy", "Fortaleza, Brazil", "Geneva, Switzerland", "Geelong, Australia", "Gold Coast, Australia", "Hamilton, New Zealand", "Hanoi, Vietnam", "Helsinki, Finland", "Hobart, Australia", "Ho Chi Minh City, Vietnam", "Honolulu, USA", "Hong Kong, China", "Istanbul, Turkey", "Jakarta, Indonesia", "Jerusalem, Israel", "Jamnagar, India", "Johannesburg, South Africa", "Karachi, Pakistan", "Kolkata, India", "Kuala Lumpur, Malaysia", "Kyoto, Japan", "La Paz, Bolivia", "Lagos, Nigeria", "Las Vegas, USA", "Lima, Peru", "Lisbon, Portugal", "London, England", "Los Angeles, USA", "Madrid, Spain", "Manali, India", "Manila, Philippines", "Maldives, Maldives", "Maputo, Mozambique", "Mar del Plata, Argentina", "Marrakech, Morocco", "Melbourne, Australia", "Mendoza, Argentina", "Mexico City, Mexico", "Miami, USA", "Montevideo, Uruguay", "Montreal, Canada", "Moscow, Russia", "Mumbai, India", "Nairobi, Kenya", "Napier, New Zealand", "New Orleans, USA", "New York City, USA", "Ottawa, Canada", "Paris, France", "Perth, Australia", "Portland, USA", "Prague, Czech Republic", "Punta Cana, Dominican Republic", "Quebec City, Canada", "Queenstown, New Zealand", "Quito, Ecuador", "Rio de Janeiro, Brazil", "Rome, Italy", "Salvador, Brazil", "San Diego, USA", "San Francisco, USA", "Santorini, Greece", "Santiago, Chile", "São Paulo, Brazil", "Seattle, USA", "Shanghai, China", "Singapore, Singapore", "Stockholm, Sweden", "Suva, Fiji", "Sydney, Australia", "Tauranga, New Zealand", "Tokyo, Japan", "Toronto, Canada", "Tunis, Tunisia", "Udaipur, India", "Vancouver, Canada", "Victoria Falls, Zimbabwe/Zambia", "Vienna, Austria", "Washington, D.C., USA", "Wellington, New Zealand", "Windhoek, Namibia", "Yellowstone, USA", "Yokohama, Japan", "Zanzibar City, Tanzania", "Zurich, Switzerland"]
+    
+    let cities = [
+      "Abuja, Nigeria", "Accra, Ghana", "Addis Ababa, Ethiopia", "Agra, India", "Ahmedabad, India", "Alexandria, Egypt",
+      "Amsterdam, Netherlands", "Anchorage, USA", "Antalya, Turkey", "Aspen, USA", "Asunción, Paraguay", "Athens, Greece",
+      "Auckland, New Zealand", "Austin, USA", "Baku, Azerbaijan", "Bali, Indonesia", "Banff, Canada", "Bangalore, India",
+      "Bangkok, Thailand", "Banjul, Gambia", "Barcelona, Spain", "Beijing, China", "Belgrade, Serbia", "Belize City, Belize",
+      "Bendigo, Australia", "Berlin, Germany", "Birmingham, England", "Bogota, Colombia", "Bologna, Italy",
+      "Bora Bora, French Polynesia", "Boston, USA", "Brasilia, Brazil", "Brisbane, Australia", "Bruges, Belgium",
+      "Budapest, Hungary", "Buenos Aires, Argentina", "Busan, Korea", "Cairo, Egypt", "Calgary, Canada",
+      "Canberra, Australia", "Cancun, Mexico", "Cape Town, South Africa", "Cartagena, Colombia", "Casablanca, Morocco",
+      "Charleston, USA", "Chengdu, China", "Chennai, India", "Chiang Mai, Thailand", "Chicago, USA", "Colombo, Sri Lanka",
+      "Copenhagen, Denmark", "Curitiba, Brazil", "Cusco, Peru", "Córdoba, Argentina", "Dakar, Senegal", "Darwin, Australia",
+      "Delhi, India", "Denver, USA", "Doha, Qatar", "Dolomites, Italy", "Dresden, Germany", "Dubai, UAE", "Dublin, Ireland",
+      "Dubrovnik, Croatia", "Dunedin, New Zealand", "Durban, South Africa", "Edinburgh, Scotland", "Ephesus, Turkey",
+      "Essaouira, Morocco", "Fes, Morocco", "Fez, Morocco", "Florence, Italy", "Fortaleza, Brazil", "Galle, Sri Lanka",
+      "Geelong, Australia", "Geneva, Switzerland", "Giza, Egypt", "Goa, India", "Gold Coast, Australia",
+      "Grand Canyon, USA", "Great Barrier Reef, Australia", "Guangzhou, China", "Guayaquil, Ecuador",
+      "Hamilton, New Zealand", "Hanoi, Vietnam", "Havana, Cuba", "Helsinki, Finland", "Ho Chi Minh City, Vietnam",
+      "Hobart, Australia", "Hokkaido, Japan", "Hong Kong, China", "Honolulu, USA", "Hvar, Croatia", "Ibiza, Spain",
+      "Iguazu Falls, Argentina/Brazil", "Innsbruck, Austria", "Istanbul, Turkey", "Jaipur, India", "Jakarta, Indonesia",
+      "Jamnagar, India", "Jeju, Korea", "Jerusalem, Israel", "Johannesburg, South Africa", "Kandy, Sri Lanka",
+      "Karachi, Pakistan", "Kiev, Ukraine", "Kigali, Rwanda", "Ko Samui, Thailand", "Kochi, India", "Kolkata, India",
+      "Kotor, Montenegro", "Kraków, Poland", "Kruger National Park, South Africa", "Kuala Lumpur, Malaysia", "Kyoto, Japan",
+      "Kyushu, Japan", "La Paz, Bolivia", "Lagos, Nigeria", "Lahore, Pakistan", "Las Vegas, USA", "Lecce, Italy",
+      "Leh, India", "Lima, Peru", "Lisbon, Portugal", "Lombok, Indonesia", "London, England", "Los Angeles, USA",
+      "Luxor, Egypt", "Lviv, Ukraine", "Machu Picchu, Peru", "Madagascar, Madagascar", "Madrid, Spain", "Malaga, Spain",
+      "Maldives, Maldives", "Manali, India", "Manila, Philippines", "Maputo, Mozambique", "Mar del Plata, Argentina",
+      "Marrakech, Morocco", "Marseille, France", "Mecca, Saudi Arabia", "Medellín, Colombia", "Melbourne, Australia",
+      "Mendoza, Argentina", "Mexico City, Mexico", "Miami, USA", "Milan, Italy", "Mombasa, Kenya", "Montevideo, Uruguay",
+      "Montreal, Canada", "Moscow, Russia", "Mumbai, India", "Munich, Germany", "Mykonos, Greece", "Nagasaki, Japan",
+      "Nairobi, Kenya", "Napier, New Zealand", "Naples, Italy", "Nashville, USA", "New Orleans, USA", "New York City, USA",
+      "Nice, France", "Nuremberg, Germany", "Orlando, USA", "Osaka, Japan", "Oslo, Norway", "Ottawa, Canada",
+      "Paris, France", "Patagonia, Chile/Argentina", "Pattaya, Thailand", "Perth, Australia", "Petra, Jordan",
+      "Philadelphia, USA", "Phuket, Thailand", "Playa del Carmen, Mexico", "Portland, USA", "Porto, Portugal",
+      "Prague, Czech Republic", "Punta Cana, Dominican Republic", "Quebec City, Canada", "Queenstown, New Zealand",
+      "Quito, Ecuador", "Reykjavik, Iceland", "Rio de Janeiro, Brazil", "Riyadh, Saudi Arabia", "Rome, Italy",
+      "Rotorua, New Zealand", "Salar de Uyuni, Bolivia", "Salvador, Brazil", "San Antonio, USA", "San Diego, USA",
+      "San Francisco, USA", "San Juan, Puerto Rico", "Santiago, Chile", "Santorini, Greece", "Sapporo, Japan",
+      "Sarajevo, Bosnia and Herzegovina", "Savannah, USA", "Seattle, USA", "Seoul, Korea", "Serengeti, Tanzania",
+      "Seville, Spain", "Shanghai, China", "Siem Reap, Cambodia", "Singapore, Singapore", "Split, Croatia",
+      "St. Moritz, Switzerland", "St. Petersburg, Russia", "Stockholm, Sweden", "Suva, Fiji", "Sydney, Australia",
+      "São Paulo, Brazil", "Taipei, Taiwan", "Tallinn, Estonia", "Tashkent, Uzbekistan", "Tauranga, New Zealand",
+      "Tbilisi, Georgia", "Tokyo, Japan", "Toronto, Canada", "Transylvania, Romania", "Tulum, Mexico", "Tunis, Tunisia",
+      "Udaipur, India", "Ulaanbaatar, Mongolia", "Uluru, Australia", "Valparaíso, Chile", "Vancouver, Canada",
+      "Venice, Italy", "Verona, Italy", "Victoria Falls, Zimbabwe/Zambia", "Victoria, Seychelles", "Vienna, Austria",
+      "Warsaw, Poland", "Washington, D.C., USA", "Wellington, New Zealand", "Windhoek, Namibia", "Yellowstone, USA",
+      "Yokohama, Japan", "Zanzibar City, Tanzania", "Zurich, Switzerland"
+    ];
+
+
 
     let elementHeight: CGFloat = UIScreen.main.bounds.height * 0.05
     let buttonWidth: CGFloat = UIScreen.main.bounds.width * 0.75

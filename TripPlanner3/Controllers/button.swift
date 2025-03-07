@@ -10,6 +10,7 @@ struct DayButtonView: View {
     var dayActivities: DayActivities
     var buttonWidth: CGFloat
     var buttonHeight: CGFloat
+    var activities: [String]
 
     var body: some View {
         HStack {

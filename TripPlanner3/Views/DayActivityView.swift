@@ -153,4 +153,8 @@ struct DayActivityView: View {
         let index = (days - 1) % imageCount + 1 // Ensures cycling through images
         return "bgImage\(index)"
     }
+    
+    
 }
+
+
